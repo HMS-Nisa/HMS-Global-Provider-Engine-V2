@@ -1,22 +1,58 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
 <!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+		
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+		<title>{title}</title>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+		<style is:global>
+			/* GLOBAL STYLES 
+			  'is:global' ensures these styles apply to the entire site, 
+			  including elements in index.astro 
+			*/
+
+			/* Custom Scrollbar */
+			::-webkit-scrollbar {
+				width: 8px;
+			}
+			::-webkit-scrollbar-track {
+				background: #f1f1f1; 
+			}
+			::-webkit-scrollbar-thumb {
+				background: #cbd5e1; 
+				border-radius: 4px;
+			}
+			::-webkit-scrollbar-thumb:hover {
+				background: #94a3b8; 
+			}
+			
+			/* Font Family */
+			body {
+				font-family: 'Inter', sans-serif;
+			}
+			
+			/* Hero Background Pattern */
+			.hero-pattern {
+				background-color: #007BA7;
+				background-image: linear-gradient(135deg, #007BA7 0%, #199BB6 100%);
+			}
+		</style>
+	</head>
+	<body class="bg-gray-50 text-slate-800 min-h-screen flex flex-col">
+		<slot /> </body>
+</html>

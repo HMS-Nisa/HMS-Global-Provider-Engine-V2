@@ -1,11 +1,413 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="HealthMetrics - Direct Contract Facility Directory">
+	
+	<style is:global>
+		/* Enforce Inter font features */
+		body {
+			font-family: 'Inter', system-ui, -apple-system, sans-serif;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			font-feature-settings: "cv11", "cv05";
+		}
+
+		@keyframes fadeInUp {
+			from { opacity: 0; transform: translateY(10px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+		
+		.animate-card {
+			animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+		}
+
+		select {
+			background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+			background-position: right 1rem center;
+			background-repeat: no-repeat;
+			background-size: 1.25em 1.25em;
+		}
+
+		/* Background Noise */
+		.bg-noise {
+			background-color: #0f172a; 
+			background-image: 
+				url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E"),
+				radial-gradient(circle at 50% 0%, #127289 0%, #0f172a 80%);
+			background-size: 150px 150px, 100% 100%;
+			background-repeat: repeat, no-repeat;
+		}
+	</style>
+
+	<nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-slate-200/50 transition-all duration-300 supports-[backdrop-filter]:bg-white/80">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="flex justify-between h-20 items-center">
+				<div class="flex items-center gap-3">
+					<img src="/logo.png" alt="HealthMetrics Logo" class="h-8 w-auto object-contain" />
+				</div>
+				<div>
+					<a href="https://healthmetrics.com" target="_blank" class="group inline-flex items-center gap-2 text-[13px] font-semibold tracking-wide text-slate-500 hover:text-[#127289] transition-all px-5 py-2.5 rounded-full hover:bg-slate-50">
+						Visit Main Site 
+						<span class="group-hover:translate-x-0.5 transition-transform text-[#127289]">→</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="h-20"></div>
+
+	<div class="relative bg-noise overflow-hidden border-b border-white/5">
+		<div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-40 text-center z-10">
+			<h1 class="text-5xl md:text-6xl font-bold text-white tracking-tighter mb-6 drop-shadow-sm leading-tight">
+				Global Provider Network
+			</h1>
+			<p class="text-slate-300 max-w-2xl mx-auto text-lg md:text-xl font-normal leading-relaxed tracking-wide opacity-90">
+				Search our extensive directory of direct contract hospitals and clinics worldwide.
+			</p>
+		</div>
+	</div>
+
+	<div class="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-28">
+		<div class="bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 ring-1 ring-slate-900/5">
+			<div class="p-6 md:p-8">
+				
+				<div class="mb-8 relative group">
+					<div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+						<svg class="h-5 w-5 text-slate-400 group-focus-within:text-[#127289] transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+					</div>
+					<input type="text" id="searchInput" 
+						class="block w-full pl-14 pr-4 py-5 bg-slate-50/50 border border-slate-200 text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] focus:bg-white rounded-xl transition-all duration-300 font-medium text-[16px] outline-none tracking-tight" 
+						placeholder="Search by facility name, address, or landmark...">
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+					
+					<div class="group">
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Facility Type</label>
+						<div class="relative">
+							<select id="typeSelect" class="block w-full px-4 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm">
+								<option value="">All Types</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="group">
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Country</label>
+						<div class="relative">
+							<select id="countrySelect" class="block w-full px-4 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm">
+								<option value="">All Countries</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="group">
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Province / State</label>
+						<div class="relative">
+							<select id="provinceSelect" class="block w-full px-4 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm">
+								<option value="">All Provinces</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="group">
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">City</label>
+						<div class="relative">
+							<select id="citySelect" class="block w-full px-4 py-3.5 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm">
+								<option value="">All Cities</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="bg-slate-50 px-8 py-4 border-t border-slate-100 flex justify-between items-center rounded-b-2xl">
+				<p class="text-xs font-semibold text-slate-500 flex items-center gap-2 uppercase tracking-wide">
+					<span class="w-1.5 h-1.5 rounded-full bg-[#127289] animate-pulse"></span>
+					Showing <span id="count" class="text-slate-900 font-bold">0</span> results
+				</p>
+				<button id="resetBtn" class="text-xs font-bold text-slate-400 hover:text-[#127289] uppercase tracking-widest hover:bg-white px-4 py-2 rounded-lg transition-all duration-300 border border-transparent hover:border-slate-200 hover:shadow-sm">
+					Reset Filters
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full min-h-[500px]">
+		
+		<div id="loading" class="hidden flex flex-col items-center justify-center py-24 transition-opacity duration-300">
+			<div class="relative w-16 h-16">
+				<div class="absolute inset-0 rounded-full border-[3px] border-slate-100"></div>
+				<div class="absolute inset-0 rounded-full border-[3px] border-[#127289] border-t-transparent animate-spin"></div>
+			</div>
+			<p class="mt-6 text-slate-400 font-medium text-sm tracking-wide">SYNCING DATABASE...</p>
+		</div>
+
+		<div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+			</div>
+
+		<div id="emptyState" class="hidden flex flex-col items-center justify-center py-24 text-center opacity-0 transition-opacity duration-500" style="opacity: 1;">
+			<div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-100">
+				<svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+			</div>
+			<h3 class="text-lg font-bold text-slate-900 mb-2">No facilities found</h3>
+			<p class="text-slate-500 text-sm max-w-xs mx-auto">Try adjusting your filters or search terms.</p>
+		</div>
+	</main>
+
+	<footer class="bg-white border-t border-slate-100 py-12 mt-auto">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+			<div class="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+				<img src="/logo.png" alt="HealthMetrics Logo" class="h-6 w-auto object-contain grayscale hover:grayscale-0 transition-all" />
+			</div>
+			<div class="text-xs font-medium text-slate-400 tracking-wide">
+				© <span id="year"></span> HealthMetrics Sdn Bhd.
+			</div>
+		</div>
+	</footer>
+
 </Layout>
+
+<script>
+	// -- CONFIGURATION --
+	const SHEET_ID = "10suTrlwl5S0ylUh1h9Ug94CCCtIVnzFywgDN1yBcMms";
+	const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&t=${Date.now()}`;
+	const PROXY_URL = `https://corsproxy.io/?${encodeURIComponent(GOOGLE_SHEET_CSV_URL)}`;
+
+	// -- DOM ELEMENTS --
+	const yearEl = document.getElementById('year');
+	if (yearEl) yearEl.textContent = new Date().getFullYear().toString();
+
+	const typeSelect = document.getElementById('typeSelect') as HTMLSelectElement;
+	const countrySelect = document.getElementById('countrySelect') as HTMLSelectElement;
+	const provinceSelect = document.getElementById('provinceSelect') as HTMLSelectElement;
+	const citySelect = document.getElementById('citySelect') as HTMLSelectElement;
+	const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+	const resultsGrid = document.getElementById('resultsGrid');
+	const loadingSpinner = document.getElementById('loading');
+	const emptyState = document.getElementById('emptyState');
+	const countLabel = document.getElementById('count');
+	const resetBtn = document.getElementById('resetBtn');
+
+	// -- STATE --
+	let allFacilities: any[] = [];
+	let filteredFacilities: any[] = [];
+
+	// -- INIT --
+	async function init() {
+		if(loadingSpinner) loadingSpinner.classList.remove('hidden');
+		
+		try {
+			let response = await fetch(GOOGLE_SHEET_CSV_URL);
+			
+			if (!response.ok) {
+				console.warn("Direct fetch failed, trying proxy...");
+				response = await fetch(PROXY_URL);
+			}
+
+			if (!response.ok) throw new Error("Network response was not ok");
+			
+			const csvText = await response.text();
+			if(csvText.trim().startsWith("<!DOCTYPE html>")) throw new Error("Received HTML error.");
+
+			allFacilities = csvToJson(csvText);
+			
+		} catch (error) {
+			console.error("Data load failed.", error);
+			allFacilities = [];
+		}
+
+		if(loadingSpinner) loadingSpinner.classList.add('hidden');
+		
+		filteredFacilities = [...allFacilities];
+		
+		populateDropdown(typeSelect, getUniqueValues('type'), "All Types");
+		populateDropdown(countrySelect, getUniqueValues('country'), "All Countries");
+		populateDropdown(provinceSelect, getUniqueValues('province'), "All Provinces");
+		populateDropdown(citySelect, getUniqueValues('city'), "All Cities");
+		
+		renderGrid();
+	}
+
+	// --- HELPER: Title Case Formatter ---
+	function toTitleCase(str: string) {
+		if (!str) return "";
+		return str.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
+	}
+
+	function csvToJson(csv: string) {
+		const lines = csv.split("\n");
+		const result = [];
+		const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
+
+		for (let i = 1; i < lines.length; i++) {
+			if (!lines[i]) continue;
+			const currentline = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+			if(!currentline) continue;
+			
+			const safeLine = lines[i].split(",");
+			let obj: any = {};
+			
+			headers.forEach((header, index) => {
+				let val = safeLine[index] ? safeLine[index].trim() : "";
+				if (val.startsWith('"') && val.endsWith('"')) val = val.substring(1, val.length - 1);
+				obj[header] = val;
+			});
+
+			const rawName = obj['provider name'] || obj['name'];
+			
+			if (rawName) {
+				// Apply Title Case here to ensure "Sentence case" look for proper names
+				const name = toTitleCase(rawName);
+
+				let type = "Healthcare Facility";
+				const lowerName = name.toLowerCase();
+				if (lowerName.includes('hospital') || lowerName.includes('medical centre') || lowerName.includes('specialist')) type = "Hospital";
+				else if (lowerName.includes('clinic') || lowerName.includes('klinik')) type = "Clinic";
+				else if (lowerName.includes('dental')) type = "Dental";
+
+				result.push({
+					name: name,
+					type: type,
+					address: obj['address'] || "",
+					city: obj['city'] || "",
+					province: obj['province / state'] || obj['province'] || "",
+					country: obj['country'] || "",
+					phone: obj['phone'] || ""
+				});
+			}
+		}
+		return result;
+	}
+
+	// -- LOGIC --
+	function getUniqueValues(key: string) {
+		return [...new Set(allFacilities.map(f => f[key]).filter(Boolean))].sort();
+	}
+
+	function populateDropdown(select: HTMLSelectElement, items: any[], defaultText: string) {
+		const currentVal = select.value;
+		select.innerHTML = `<option value="">${defaultText}</option>`;
+		items.forEach(item => {
+			const option = document.createElement('option');
+			option.value = item;
+			option.textContent = item;
+			select.appendChild(option);
+		});
+		if (items.includes(currentVal)) select.value = currentVal;
+	}
+
+	function handleFilterChange() {
+		const type = typeSelect.value;
+		const country = countrySelect.value;
+		const province = provinceSelect.value;
+		const city = citySelect.value;
+		const keyword = searchInput.value.toLowerCase().trim();
+
+		filteredFacilities = allFacilities.filter(item => {
+			const matchesType = (!type || item.type === type);
+			const matchesGeo = (!country || item.country === country) &&
+							   (!province || item.province === province) &&
+							   (!city || item.city === city);
+			
+			const matchesKeyword = !keyword || 
+								   item.name.toLowerCase().includes(keyword) || 
+								   item.address.toLowerCase().includes(keyword) ||
+								   item.city?.toLowerCase().includes(keyword);
+
+			return matchesType && matchesGeo && matchesKeyword;
+		});
+
+		renderGrid();
+	}
+
+	function renderGrid() {
+		if(!resultsGrid || !countLabel || !emptyState) return;
+
+		resultsGrid.innerHTML = '';
+		countLabel.textContent = filteredFacilities.length.toString();
+
+		if (filteredFacilities.length === 0) {
+			emptyState.classList.remove('hidden');
+			emptyState.style.opacity = '1';
+			return;
+		} else {
+			emptyState.classList.add('hidden');
+		}
+
+		filteredFacilities.slice(0, 50).forEach((facility, index) => {
+			const card = document.createElement('article');
+			
+			const delay = index < 15 ? index * 50 : 0;
+			card.style.animationDelay = `${delay}ms`;
+			card.className = "animate-card opacity-0 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_32px_-8px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-500 border border-slate-200/60 flex flex-col h-full group cursor-default";
+			
+			const brandColor = '#127289';
+			let topBorderColor = `bg-[${brandColor}]`; 
+			let typeColor = `text-[${brandColor}] bg-slate-50`;
+			
+			const displayPhone = facility.phone ? facility.phone : null;
+
+			card.innerHTML = `
+				<div class="h-1 w-full ${topBorderColor} opacity-90"></div>
+				
+				<div class="p-6 flex flex-col h-full relative z-10">
+					<div class="flex justify-between items-center mb-4">
+						<span class="inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest ${typeColor} ring-1 ring-slate-100/80">
+							${facility.type}
+						</span>
+						<div class="flex items-center gap-1.5" title="Direct Contract">
+							<span class="relative flex h-1.5 w-1.5">
+							  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+							  <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+							</span>
+						</div>
+					</div>
+					
+					<h3 class="text-[17px] font-semibold text-slate-800 mb-4 leading-snug tracking-tight group-hover:text-[#127289] transition-colors">${facility.name}</h3>
+					
+					<div class="space-y-2.5 mb-6">
+						${displayPhone ? `
+						<div class="flex items-center gap-3">
+							<div class="text-slate-300">
+								<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+							</div>
+							<p class="text-[13px] text-slate-500 font-medium tracking-wide">${displayPhone}</p>
+						</div>` : ''}
+					</div>
+					
+					<div class="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
+						<div class="flex flex-col">
+							<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</span>
+							<span class="text-[11px] font-bold text-slate-700">${facility.city}, ${facility.province}</span>
+						</div>
+						<div class="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-slate-300 transform group-hover:translate-x-1 transition-transform">
+							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+						</div>
+					</div>
+				</div>
+			`;
+			resultsGrid.appendChild(card);
+		});
+	}
+
+	// -- EVENTS --
+	typeSelect.addEventListener('change', handleFilterChange);
+	countrySelect.addEventListener('change', handleFilterChange);
+	provinceSelect.addEventListener('change', handleFilterChange);
+	citySelect.addEventListener('change', handleFilterChange);
+	searchInput.addEventListener('input', handleFilterChange);
+
+	resetBtn.addEventListener('click', () => {
+		typeSelect.value = "";
+		countrySelect.value = "";
+		provinceSelect.value = "";
+		citySelect.value = "";
+		searchInput.value = "";
+		filteredFacilities = [...allFacilities];
+		renderGrid();
+	});
+
+	init();
+</script>
