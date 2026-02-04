@@ -1,4 +1,6 @@
 ---
+import '../styles/global.css';
+
 interface Props {
 	title: string;
 }
@@ -10,7 +12,7 @@ const { title } = Astro.props;
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
 		
 		<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,12 +23,18 @@ const { title } = Astro.props;
 		<title>{title}</title>
 
 		<style is:global>
-			/* GLOBAL STYLES 
-			  'is:global' ensures these styles apply to the entire site, 
-			  including elements in index.astro 
-			*/
+			/* GLOBAL STYLES */
+			
+			/* 1. Font Settings & Smoothing */
+			body {
+				font-family: 'Inter', system-ui, -apple-system, sans-serif;
+				-webkit-font-smoothing: antialiased;
+				-moz-osx-font-smoothing: grayscale;
+				/* Activates Inter's specific character variants (e.g. taller numbers) */
+				font-feature-settings: "cv11", "cv05";
+			}
 
-			/* Custom Scrollbar */
+			/* 2. Custom Scrollbar */
 			::-webkit-scrollbar {
 				width: 8px;
 			}
@@ -41,12 +49,7 @@ const { title } = Astro.props;
 				background: #94a3b8; 
 			}
 			
-			/* Font Family */
-			body {
-				font-family: 'Inter', sans-serif;
-			}
-			
-			/* Hero Background Pattern */
+			/* 3. Legacy Hero Pattern (Optional, kept for safety) */
 			.hero-pattern {
 				background-color: #007BA7;
 				background-image: linear-gradient(135deg, #007BA7 0%, #199BB6 100%);
@@ -54,5 +57,6 @@ const { title } = Astro.props;
 		</style>
 	</head>
 	<body class="bg-gray-50 text-slate-800 min-h-screen flex flex-col">
-		<slot /> </body>
+		<slot /> 
+	</body>
 </html>
