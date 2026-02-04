@@ -3,9 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import { parse } from 'csv-parse/sync';
 
 // --- SERVER-SIDE DATA FETCHING ---
-// This runs at build time (or request time in SSR mode), not in the browser.
-// No loading spinners needed anymore.
-
 const SHEET_ID = "10suTrlwl5S0ylUh1h9Ug94CCCtIVnzFywgDN1yBcMms";
 const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
 
@@ -18,24 +15,19 @@ try {
   
   const csvText = await response.text();
   
-  // Parse CSV on the server
   const records = parse(csvText, {
     columns: true,
     skip_empty_lines: true,
     trim: true,
   });
 
-  // Transform Data
   allFacilities = records.map((record: any) => {
-    // Helper: Title Case
     const toTitleCase = (str: string) => str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
 
     const rawName = record['Provider Name'] || record['name'] || "";
-    // Clean leading/trailing quotes/exclamations
     const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
     const name = toTitleCase(cleanName);
 
-    // Determine Type
     let type = "Healthcare Facility";
     const lowerName = name.toLowerCase();
     if (lowerName.includes('hospital') || lowerName.includes('medical centre') || lowerName.includes('specialist')) type = "Hospital";
@@ -51,14 +43,13 @@ try {
       country: record['Country'] || record['country'] || "",
       phone: record['Phone'] || record['phone'] || ""
     };
-  }).filter((f: any) => f.name); // Filter out empty rows
+  }).filter((f: any) => f.name);
 
 } catch (e) {
   console.error("Server fetch failed:", e);
   error = "Could not load provider data. Please try again later.";
 }
 
-// Pass data to client-side script via a global variable or data attribute
 const initialData = JSON.stringify(allFacilities);
 ---
 
@@ -188,8 +179,17 @@ const initialData = JSON.stringify(allFacilities);
 
 	<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full min-h-[500px]">
 		
-		<div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+		<div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             </div>
+
+        <div id="loadMoreContainer" class="hidden flex justify-center pb-8">
+            <button id="loadMoreBtn" class="group relative inline-flex items-center justify-center px-8 py-3.5 bg-white border border-slate-200 rounded-full hover:border-[#127289] hover:shadow-lg transition-all duration-300">
+                <span class="text-sm font-bold text-slate-600 uppercase tracking-widest group-hover:text-[#127289] mr-3">Load More Facilities</span>
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 group-hover:bg-[#127289]/10 group-hover:text-[#127289] transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </span>
+            </button>
+        </div>
 
 		<div id="emptyState" class="hidden flex flex-col items-center justify-center py-24 text-center opacity-0 transition-opacity duration-500" style="opacity: 1;">
 			<div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-100">
@@ -230,16 +230,22 @@ const initialData = JSON.stringify(allFacilities);
 	const emptyState = document.getElementById('emptyState');
 	const countLabel = document.getElementById('count');
 	const resetBtn = document.getElementById('resetBtn');
+    
+    // New Load More Elements
+    const loadMoreContainer = document.getElementById('loadMoreContainer');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
 
 	// -- STATE --
-    // Load from server-injected variable
 	let allFacilities = (window as any).SERVER_DATA || [];
 	let filteredFacilities: any[] = [];
+    
+    // Pagination State
+    let visibleLimit = 50;
+    const BATCH_SIZE = 50;
 
 	// -- INIT --
 	function init() {
 		filteredFacilities = [...allFacilities];
-		
 		updateDropdownOptions('init');
 		renderGrid();
 	}
@@ -326,11 +332,13 @@ const initialData = JSON.stringify(allFacilities);
 			return matchesGeo && matchesKeyword;
 		});
 
+        // Reset pagination when filters change
+        visibleLimit = BATCH_SIZE;
 		renderGrid();
 	}
 
 	function renderGrid() {
-		if(!resultsGrid || !countLabel || !emptyState) return;
+		if(!resultsGrid || !countLabel || !emptyState || !loadMoreContainer) return;
 
 		resultsGrid.innerHTML = '';
 		countLabel.textContent = filteredFacilities.length.toString();
@@ -338,14 +346,26 @@ const initialData = JSON.stringify(allFacilities);
 		if (filteredFacilities.length === 0) {
 			emptyState.classList.remove('hidden');
 			emptyState.style.opacity = '1';
+            loadMoreContainer.classList.add('hidden');
 			return;
 		} else {
 			emptyState.classList.add('hidden');
 		}
 
-		filteredFacilities.slice(0, 50).forEach((facility, index) => {
+        // --- LOAD MORE LOGIC ---
+        // Determine if we need to show the button
+        if (visibleLimit >= filteredFacilities.length) {
+            loadMoreContainer.classList.add('hidden');
+        } else {
+            loadMoreContainer.classList.remove('hidden');
+        }
+
+        // Slice data based on visibleLimit
+		filteredFacilities.slice(0, visibleLimit).forEach((facility, index) => {
 			const card = document.createElement('article');
 			
+			// Only animate the newly added batch? 
+            // For simplicity, we animate all, but with staggering it looks okay.
 			const delay = index < 15 ? index * 50 : 0;
 			card.style.animationDelay = `${delay}ms`;
 			card.className = "animate-card opacity-0 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-slate-200/60 flex flex-col h-full group cursor-default hover:border-[#127289]/50 hover:ring-2 hover:ring-[#127289]/10";
@@ -360,10 +380,7 @@ const initialData = JSON.stringify(allFacilities);
 				<div class="h-1 w-full ${topBorderColor} opacity-90 group-hover:h-1.5 transition-all duration-300"></div>
 				
 				<div class="p-6 flex flex-col h-full relative z-10">
-					<div class="flex justify-between items-center mb-4">
-						<span class="inline-flex items-center px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-widest ${typeColor} ring-1 ring-slate-100/80 group-hover:bg-[#127289] group-hover:text-white transition-colors duration-300">
-							${facility.type}
-						</span>
+					<div class="flex justify-end items-center mb-4">
 						<div class="flex items-center gap-1.5" title="Direct Contract">
 							<span class="relative flex h-1.5 w-1.5">
 							  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -402,6 +419,14 @@ const initialData = JSON.stringify(allFacilities);
 	citySelect.addEventListener('change', handleFilterChange);
 	searchInput.addEventListener('input', handleFilterChange);
 
+    // Load More Event
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+            visibleLimit += BATCH_SIZE;
+            renderGrid();
+        });
+    }
+
 	resetBtn.addEventListener('click', () => {
 		countrySelect.value = "";
 		provinceSelect.value = "";
@@ -411,6 +436,9 @@ const initialData = JSON.stringify(allFacilities);
 		updateDropdownOptions('init');
 		
 		filteredFacilities = [...allFacilities];
+        
+        // Reset pagination
+        visibleLimit = BATCH_SIZE;
 		renderGrid();
 	});
 
