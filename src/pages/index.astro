@@ -1,5 +1,65 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { parse } from 'csv-parse/sync';
+
+// --- SERVER-SIDE DATA FETCHING ---
+// This runs at build time (or request time in SSR mode), not in the browser.
+// No loading spinners needed anymore.
+
+const SHEET_ID = "10suTrlwl5S0ylUh1h9Ug94CCCtIVnzFywgDN1yBcMms";
+const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+let allFacilities = [];
+let error = null;
+
+try {
+  const response = await fetch(GOOGLE_SHEET_CSV_URL);
+  if (!response.ok) throw new Error('Failed to fetch data');
+  
+  const csvText = await response.text();
+  
+  // Parse CSV on the server
+  const records = parse(csvText, {
+    columns: true,
+    skip_empty_lines: true,
+    trim: true,
+  });
+
+  // Transform Data
+  allFacilities = records.map((record: any) => {
+    // Helper: Title Case
+    const toTitleCase = (str: string) => str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
+
+    const rawName = record['Provider Name'] || record['name'] || "";
+    // Clean leading/trailing quotes/exclamations
+    const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
+    const name = toTitleCase(cleanName);
+
+    // Determine Type
+    let type = "Healthcare Facility";
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes('hospital') || lowerName.includes('medical centre') || lowerName.includes('specialist')) type = "Hospital";
+    else if (lowerName.includes('clinic') || lowerName.includes('klinik')) type = "Clinic";
+    else if (lowerName.includes('dental')) type = "Dental";
+
+    return {
+      name: name,
+      type: type,
+      address: record['Address'] || record['address'] || "",
+      city: record['City'] || record['city'] || "",
+      province: record['Province / State'] || record['province'] || "",
+      country: record['Country'] || record['country'] || "",
+      phone: record['Phone'] || record['phone'] || ""
+    };
+  }).filter((f: any) => f.name); // Filter out empty rows
+
+} catch (e) {
+  console.error("Server fetch failed:", e);
+  error = "Could not load provider data. Please try again later.";
+}
+
+// Pass data to client-side script via a global variable or data attribute
+const initialData = JSON.stringify(allFacilities);
 ---
 
 <Layout title="HealthMetrics - Direct Contract Facility Directory">
@@ -128,16 +188,8 @@ import Layout from '../layouts/Layout.astro';
 
 	<main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full min-h-[500px]">
 		
-		<div id="loading" class="hidden flex flex-col items-center justify-center py-24 transition-opacity duration-300">
-			<div class="relative w-16 h-16">
-				<div class="absolute inset-0 rounded-full border-[3px] border-slate-100"></div>
-				<div class="absolute inset-0 rounded-full border-[3px] border-[#127289] border-t-transparent animate-spin"></div>
-			</div>
-			<p class="mt-6 text-slate-400 font-medium text-sm tracking-wide">SYNCING DATABASE...</p>
-		</div>
-
 		<div id="resultsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-			</div>
+            </div>
 
 		<div id="emptyState" class="hidden flex flex-col items-center justify-center py-24 text-center opacity-0 transition-opacity duration-500" style="opacity: 1;">
 			<div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-slate-100">
@@ -159,14 +211,13 @@ import Layout from '../layouts/Layout.astro';
 		</div>
 	</footer>
 
+    <script define:vars={{ initialData }}>
+        window.SERVER_DATA = JSON.parse(initialData);
+    </script>
+
 </Layout>
 
 <script>
-	// -- CONFIGURATION --
-	const SHEET_ID = "10suTrlwl5S0ylUh1h9Ug94CCCtIVnzFywgDN1yBcMms";
-	const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&t=${Date.now()}`;
-	const PROXY_URL = `https://corsproxy.io/?${encodeURIComponent(GOOGLE_SHEET_CSV_URL)}`;
-
 	// -- DOM ELEMENTS --
 	const yearEl = document.getElementById('year');
 	if (yearEl) yearEl.textContent = new Date().getFullYear().toString();
@@ -176,96 +227,21 @@ import Layout from '../layouts/Layout.astro';
 	const citySelect = document.getElementById('citySelect') as HTMLSelectElement;
 	const searchInput = document.getElementById('searchInput') as HTMLInputElement;
 	const resultsGrid = document.getElementById('resultsGrid');
-	const loadingSpinner = document.getElementById('loading');
 	const emptyState = document.getElementById('emptyState');
 	const countLabel = document.getElementById('count');
 	const resetBtn = document.getElementById('resetBtn');
 
 	// -- STATE --
-	let allFacilities: any[] = [];
+    // Load from server-injected variable
+	let allFacilities = (window as any).SERVER_DATA || [];
 	let filteredFacilities: any[] = [];
 
 	// -- INIT --
-	async function init() {
-		if(loadingSpinner) loadingSpinner.classList.remove('hidden');
-		
-		try {
-			let response = await fetch(GOOGLE_SHEET_CSV_URL);
-			
-			if (!response.ok) {
-				console.warn("Direct fetch failed, trying proxy...");
-				response = await fetch(PROXY_URL);
-			}
-
-			if (!response.ok) throw new Error("Network response was not ok");
-			
-			const csvText = await response.text();
-			if(csvText.trim().startsWith("<!DOCTYPE html>")) throw new Error("Received HTML error.");
-
-			allFacilities = csvToJson(csvText);
-			
-		} catch (error) {
-			console.error("Data load failed.", error);
-			allFacilities = [];
-		}
-
-		if(loadingSpinner) loadingSpinner.classList.add('hidden');
-		
+	function init() {
 		filteredFacilities = [...allFacilities];
 		
 		updateDropdownOptions('init');
 		renderGrid();
-	}
-
-	// --- HELPER: Title Case Formatter ---
-	function toTitleCase(str: string) {
-		if (!str) return "";
-		return str.toLowerCase().replace(/\b\w/g, s => s.toUpperCase());
-	}
-
-	function csvToJson(csv: string) {
-		const lines = csv.split("\n");
-		const result = [];
-		const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
-
-		for (let i = 1; i < lines.length; i++) {
-			if (!lines[i]) continue;
-			const currentline = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-			if(!currentline) continue;
-			
-			const safeLine = lines[i].split(",");
-			let obj: any = {};
-			
-			headers.forEach((header, index) => {
-				let val = safeLine[index] ? safeLine[index].trim() : "";
-				if (val.startsWith('"') && val.endsWith('"')) val = val.substring(1, val.length - 1);
-				obj[header] = val;
-			});
-
-			const rawName = obj['provider name'] || obj['name'];
-			
-			if (rawName) {
-				const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
-				const name = toTitleCase(cleanName);
-
-				let type = "Healthcare Facility";
-				const lowerName = name.toLowerCase();
-				if (lowerName.includes('hospital') || lowerName.includes('medical centre') || lowerName.includes('specialist')) type = "Hospital";
-				else if (lowerName.includes('clinic') || lowerName.includes('klinik')) type = "Clinic";
-				else if (lowerName.includes('dental')) type = "Dental";
-
-				result.push({
-					name: name,
-					type: type,
-					address: obj['address'] || "",
-					city: obj['city'] || "",
-					province: obj['province / state'] || obj['province'] || "",
-					country: obj['country'] || "",
-					phone: obj['phone'] || ""
-				});
-			}
-		}
-		return result;
 	}
 
 	// -- SMART FILTER LOGIC --
@@ -412,9 +388,6 @@ import Layout from '../layouts/Layout.astro';
 						<div class="flex flex-col">
 							<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</span>
 							<span class="text-[11px] font-bold text-slate-700 group-hover:text-[#127289] transition-colors">${facility.city}, ${facility.province}</span>
-						</div>
-						<div class="opacity-0 group-hover:opacity-100 transition-opacity duration-500 text-[#127289] transform group-hover:translate-x-1 transition-transform">
-							<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
 						</div>
 					</div>
 				</div>
