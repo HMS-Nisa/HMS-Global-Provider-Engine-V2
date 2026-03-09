@@ -148,8 +148,8 @@ const initialData = JSON.stringify(allFacilities);
 					<div class="group w-full min-w-0">
 						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Province / State</label>
 						<div class="relative w-full">
-							<select id="provinceSelect" class="block w-full px-4 h-[52px] pr-10 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate">
-								<option value="">All Provinces</option>
+							<select id="provinceSelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
+								<option value="">Select a Country first</option>
 							</select>
 						</div>
 					</div>
@@ -157,8 +157,8 @@ const initialData = JSON.stringify(allFacilities);
 					<div class="group w-full min-w-0">
 						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">City</label>
 						<div class="relative w-full">
-							<select id="citySelect" class="block w-full px-4 h-[52px] pr-10 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate">
-								<option value="">All Cities</option>
+							<select id="citySelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
+								<option value="">Select a Province first</option>
 							</select>
 						</div>
 					</div>
@@ -279,26 +279,42 @@ const initialData = JSON.stringify(allFacilities);
 			populateDropdown(countrySelect, getUniqueFromList(allFacilities, 'country'), "All Countries");
 		}
 
-		if (source === 'init' || source === 'country') {
-			let validProvinces = [];
-			if (selectedCountry) {
-				const facilitiesInCountry = allFacilities.filter(f => f.country === selectedCountry);
-				validProvinces = getUniqueFromList(facilitiesInCountry, 'province');
-			} else {
-				validProvinces = getUniqueFromList(allFacilities, 'province');
-			}
-			populateDropdown(provinceSelect, validProvinces, "All Provinces");
-		}
+        // Hierarchy Logic:
+        // 1. If NO country is selected, disable Province and City
+		if (!selectedCountry) {
+            provinceSelect.disabled = true;
+            provinceSelect.innerHTML = `<option value="">Select a Country first</option>`;
+            
+            citySelect.disabled = true;
+            citySelect.innerHTML = `<option value="">Select a Province first</option>`;
+        } 
+        // 2. If Country IS selected, enable Province and populate it
+        else if (source === 'country' || source === 'init') {
+            provinceSelect.disabled = false;
+            provinceSelect.classList.remove('bg-slate-50'); // Remove disabled styling
+            provinceSelect.classList.add('bg-white');
 
-		let facilitiesForCities = allFacilities;
-		if (selectedCountry) {
-			facilitiesForCities = facilitiesForCities.filter(f => f.country === selectedCountry);
+            const facilitiesInCountry = allFacilities.filter(f => f.country === selectedCountry);
+			const validProvinces = getUniqueFromList(facilitiesInCountry, 'province');
+			populateDropdown(provinceSelect, validProvinces, "All Provinces");
+
+            // If a country is selected but no province, disable city
+            if(!selectedProvince) {
+                citySelect.disabled = true;
+                citySelect.innerHTML = `<option value="">Select a Province first</option>`;
+            }
+        }
+
+        // 3. If Province IS selected, enable City and populate it
+		if (selectedProvince && selectedCountry) {
+            citySelect.disabled = false;
+            citySelect.classList.remove('bg-slate-50');
+            citySelect.classList.add('bg-white');
+
+            const facilitiesForCities = allFacilities.filter(f => f.country === selectedCountry && f.province === selectedProvince);
+            const validCities = getUniqueFromList(facilitiesForCities, 'city');
+		    populateDropdown(citySelect, validCities, "All Cities");
 		}
-		if (selectedProvince) {
-			facilitiesForCities = facilitiesForCities.filter(f => f.province === selectedProvince);
-		}
-		const validCities = getUniqueFromList(facilitiesForCities, 'city');
-		populateDropdown(citySelect, validCities, "All Cities");
 	}
 
 	function handleFilterChange(e: Event) {
@@ -364,8 +380,6 @@ const initialData = JSON.stringify(allFacilities);
 		filteredFacilities.slice(0, visibleLimit).forEach((facility, index) => {
 			const card = document.createElement('article');
 			
-			// Only animate the newly added batch? 
-            // For simplicity, we animate all, but with staggering it looks okay.
 			const delay = index < 15 ? index * 50 : 0;
 			card.style.animationDelay = `${delay}ms`;
 			card.className = "animate-card opacity-0 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-slate-200/60 flex flex-col h-full group cursor-default hover:border-[#127289]/50 hover:ring-2 hover:ring-[#127289]/10";
