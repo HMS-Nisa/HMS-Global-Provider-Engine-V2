@@ -3,8 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import { parse } from 'csv-parse/sync';
 
 // --- SERVER-SIDE DATA FETCHING ---
-const SHEET_ID = "10suTrlwl5S0ylUh1h9Ug94CCCtIVnzFywgDN1yBcMms";
-const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+const SHEET_ID = "1KgN-6huSau90xLvkQ-7e2oQwhdexdqGD5n0vz3SYfFM";
+const SHEET_GID = "1218302279";
+const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
 
 let allFacilities = [];
 let error = null;
@@ -146,19 +147,19 @@ const initialData = JSON.stringify(allFacilities);
 					</div>
 
 					<div class="group w-full min-w-0">
-						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Province / State</label>
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">City</label>
 						<div class="relative w-full">
-							<select id="provinceSelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
+							<select id="citySelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
 								<option value="">Select a Country first</option>
 							</select>
 						</div>
 					</div>
 
 					<div class="group w-full min-w-0">
-						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">City</label>
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Province / State</label>
 						<div class="relative w-full">
-							<select id="citySelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
-								<option value="">Select a Province first</option>
+							<select id="provinceSelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
+								<option value="">Select a City first</option>
 							</select>
 						</div>
 					</div>
@@ -271,50 +272,55 @@ const initialData = JSON.stringify(allFacilities);
 		}
 	}
 
-	function updateDropdownOptions(source: 'init' | 'country' | 'province') {
+	function updateDropdownOptions(source: 'init' | 'country' | 'city') {
 		const selectedCountry = countrySelect.value;
-		const selectedProvince = provinceSelect.value;
+		const selectedCity = citySelect.value;
 
 		if (source === 'init') {
 			populateDropdown(countrySelect, getUniqueFromList(allFacilities, 'country'), "All Countries");
 		}
 
         // Hierarchy Logic:
-        // 1. If NO country is selected, disable Province and City
+        // 1. If NO country is selected, disable City and Province
 		if (!selectedCountry) {
-            provinceSelect.disabled = true;
-            provinceSelect.innerHTML = `<option value="">Select a Country first</option>`;
-            
             citySelect.disabled = true;
-            citySelect.innerHTML = `<option value="">Select a Province first</option>`;
-        } 
-        // 2. If Country IS selected, enable Province and populate it
-        else if (source === 'country' || source === 'init') {
-            provinceSelect.disabled = false;
-            provinceSelect.classList.remove('bg-slate-50'); // Remove disabled styling
-            provinceSelect.classList.add('bg-white');
+            citySelect.innerHTML = `<option value="">Select a Country first</option>`;
+            citySelect.classList.add('bg-slate-50');
+            citySelect.classList.remove('bg-white');
+            
+            provinceSelect.disabled = true;
+            provinceSelect.innerHTML = `<option value="">Select a City first</option>`;
+            provinceSelect.classList.add('bg-slate-50');
+            provinceSelect.classList.remove('bg-white');
+        } else {
+            // Country IS selected, enable City and populate it if triggered by country change or init
+            if (source === 'country' || source === 'init') {
+                citySelect.disabled = false;
+                citySelect.classList.remove('bg-slate-50');
+                citySelect.classList.add('bg-white');
 
-            const facilitiesInCountry = allFacilities.filter(f => f.country === selectedCountry);
-			const validProvinces = getUniqueFromList(facilitiesInCountry, 'province');
-			populateDropdown(provinceSelect, validProvinces, "All Provinces");
+                const facilitiesInCountry = allFacilities.filter(f => f.country === selectedCountry);
+                const validCities = getUniqueFromList(facilitiesInCountry, 'city');
+                populateDropdown(citySelect, validCities, "All Cities");
+            }
 
-            // If a country is selected but no province, disable city
-            if(!selectedProvince) {
-                citySelect.disabled = true;
-                citySelect.innerHTML = `<option value="">Select a Province first</option>`;
+            // If a country is selected but no city, disable province
+            if (!citySelect.value) {
+                provinceSelect.disabled = true;
+                provinceSelect.innerHTML = `<option value="">Select a City first</option>`;
+                provinceSelect.classList.add('bg-slate-50');
+                provinceSelect.classList.remove('bg-white');
+            } else {
+                // City IS selected, enable Province and populate it
+                provinceSelect.disabled = false;
+                provinceSelect.classList.remove('bg-slate-50');
+                provinceSelect.classList.add('bg-white');
+
+                const facilitiesForProvinces = allFacilities.filter(f => f.country === selectedCountry && f.city === citySelect.value);
+                const validProvinces = getUniqueFromList(facilitiesForProvinces, 'province');
+                populateDropdown(provinceSelect, validProvinces, "All Provinces");
             }
         }
-
-        // 3. If Province IS selected, enable City and populate it
-		if (selectedProvince && selectedCountry) {
-            citySelect.disabled = false;
-            citySelect.classList.remove('bg-slate-50');
-            citySelect.classList.add('bg-white');
-
-            const facilitiesForCities = allFacilities.filter(f => f.country === selectedCountry && f.province === selectedProvince);
-            const validCities = getUniqueFromList(facilitiesForCities, 'city');
-		    populateDropdown(citySelect, validCities, "All Cities");
-		}
 	}
 
 	function handleFilterChange(e: Event) {
@@ -322,12 +328,12 @@ const initialData = JSON.stringify(allFacilities);
 		const sourceId = target.id;
 
 		if (sourceId === 'countrySelect') {
+			citySelect.value = "";
 			provinceSelect.value = "";
-			citySelect.value = "";
 			updateDropdownOptions('country');
-		} else if (sourceId === 'provinceSelect') {
-			citySelect.value = "";
-			updateDropdownOptions('province');
+		} else if (sourceId === 'citySelect') {
+			provinceSelect.value = "";
+			updateDropdownOptions('city');
 		}
 
 		const country = countrySelect.value;
@@ -420,6 +426,10 @@ const initialData = JSON.stringify(allFacilities);
 							<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</span>
 							<span class="text-[11px] font-bold text-slate-700 group-hover:text-[#127289] transition-colors">${facility.city}, ${facility.province}</span>
 						</div>
+						<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(facility.name + ', ' + facility.address + ', ' + facility.city)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 text-[#127289] hover:bg-[#127289] hover:text-white transition-all duration-300 border border-slate-100 hover:border-[#127289] shadow-sm group/btn" title="View on Map">
+							<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+							<span class="text-[10px] font-bold uppercase tracking-wider">Map</span>
+						</a>
 					</div>
 				</div>
 			`;
