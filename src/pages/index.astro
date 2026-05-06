@@ -29,15 +29,16 @@ try {
     const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
     const name = toTitleCase(cleanName);
 
-    let type = "Healthcare Facility";
-    const lowerName = name.toLowerCase();
-    if (lowerName.includes('hospital') || lowerName.includes('medical centre') || lowerName.includes('specialist')) type = "Hospital";
-    else if (lowerName.includes('clinic') || lowerName.includes('klinik')) type = "Clinic";
-    else if (lowerName.includes('dental')) type = "Dental";
+    const rawServiceType = (record['Service Type'] || '').trim().toUpperCase();
+    let serviceType = 'Other';
+    if (rawServiceType === 'GP') serviceType = 'GP';
+    else if (rawServiceType === 'HOSPITAL') serviceType = 'Hospital';
+    else if (rawServiceType === 'DENTAL') serviceType = 'Dental';
+    else if (rawServiceType === 'SPECIALIST') serviceType = 'Specialist';
 
     return {
       name: name,
-      type: type,
+      serviceType: serviceType,
       address: record['Address'] || record['address'] || "",
       city: record['City'] || record['city'] || "",
       province: record['Province / State'] || record['province'] || "",
@@ -135,8 +136,8 @@ const initialData = JSON.stringify(allFacilities);
 						placeholder="Search by facility name, address, or landmark...">
 				</div>
 
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 w-full min-w-0">
-					
+				<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 w-full min-w-0">
+
 					<div class="group w-full min-w-0">
 						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Country</label>
 						<div class="relative w-full">
@@ -160,6 +161,19 @@ const initialData = JSON.stringify(allFacilities);
 						<div class="relative w-full">
 							<select id="provinceSelect" class="block w-full px-4 h-[52px] pr-10 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer shadow-sm font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed truncate disabled:bg-slate-100 disabled:text-slate-400" disabled>
 								<option value="">Select a City first</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="group w-full min-w-0">
+						<label class="block text-[11px] font-bold text-slate-500 uppercase tracking-widest mb-2.5 ml-1 group-focus-within:text-[#127289] transition-colors">Service Type</label>
+						<div class="relative w-full">
+							<select id="serviceTypeSelect" class="block w-full px-4 h-[52px] pr-10 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm truncate">
+								<option value="">All Types</option>
+								<option value="GP">GP</option>
+								<option value="Hospital">Hospital</option>
+								<option value="Dental">Dental</option>
+								<option value="Specialist">Specialist</option>
 							</select>
 						</div>
 					</div>
@@ -226,6 +240,7 @@ const initialData = JSON.stringify(allFacilities);
 	const countrySelect = document.getElementById('countrySelect') as HTMLSelectElement;
 	const provinceSelect = document.getElementById('provinceSelect') as HTMLSelectElement;
 	const citySelect = document.getElementById('citySelect') as HTMLSelectElement;
+	const serviceTypeSelect = document.getElementById('serviceTypeSelect') as HTMLSelectElement;
 	const searchInput = document.getElementById('searchInput') as HTMLInputElement;
 	const resultsGrid = document.getElementById('resultsGrid');
 	const emptyState = document.getElementById('emptyState');
@@ -339,19 +354,22 @@ const initialData = JSON.stringify(allFacilities);
 		const country = countrySelect.value;
 		const province = provinceSelect.value;
 		const city = citySelect.value;
+		const serviceType = serviceTypeSelect.value;
 		const keyword = searchInput.value.toLowerCase().trim();
 
 		filteredFacilities = allFacilities.filter(item => {
 			const matchesGeo = (!country || item.country === country) &&
 							   (!province || item.province === province) &&
 							   (!city || item.city === city);
-			
-			const matchesKeyword = !keyword || 
-								   item.name.toLowerCase().includes(keyword) || 
+
+			const matchesType = !serviceType || item.serviceType === serviceType;
+
+			const matchesKeyword = !keyword ||
+								   item.name.toLowerCase().includes(keyword) ||
 								   item.address.toLowerCase().includes(keyword) ||
 								   item.city?.toLowerCase().includes(keyword);
 
-			return matchesGeo && matchesKeyword;
+			return matchesGeo && matchesType && matchesKeyword;
 		});
 
         // Reset pagination when filters change
@@ -391,16 +409,24 @@ const initialData = JSON.stringify(allFacilities);
 			card.className = "animate-card opacity-0 bg-white rounded-xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border border-slate-200/60 flex flex-col h-full group cursor-default hover:border-[#127289]/50 hover:ring-2 hover:ring-[#127289]/10";
 			
 			const brandColor = '#127289';
-			let topBorderColor = `bg-[${brandColor}]`; 
-			let typeColor = `text-[${brandColor}] bg-slate-50`;
-			
+			const topBorderColor = `bg-[${brandColor}]`;
+
+			const typeBadgeStyles: Record<string, {bg: string; color: string}> = {
+				'GP':         { bg: '#EFF6FF', color: '#1D4ED8' },
+				'Hospital':   { bg: '#FFF7ED', color: '#C2410C' },
+				'Dental':     { bg: '#F5F3FF', color: '#7C3AED' },
+				'Specialist': { bg: '#ECFDF5', color: '#059669' },
+				'Other':      { bg: '#F8FAFC', color: '#64748B' },
+			};
+			const badge = typeBadgeStyles[facility.serviceType] || typeBadgeStyles['Other'];
 			const displayPhone = facility.phone ? facility.phone : null;
 
 			card.innerHTML = `
 				<div class="h-1 w-full ${topBorderColor} opacity-90 group-hover:h-1.5 transition-all duration-300"></div>
-				
+
 				<div class="p-6 flex flex-col h-full relative z-10">
-					<div class="flex justify-end items-center mb-4">
+					<div class="flex justify-between items-center mb-4">
+						<span style="background:${badge.bg};color:${badge.color}" class="px-2.5 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider leading-none">${facility.serviceType}</span>
 						<div class="flex items-center gap-1.5" title="Direct Contract">
 							<span class="relative flex h-1.5 w-1.5">
 							  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -441,6 +467,7 @@ const initialData = JSON.stringify(allFacilities);
 	countrySelect.addEventListener('change', handleFilterChange);
 	provinceSelect.addEventListener('change', handleFilterChange);
 	citySelect.addEventListener('change', handleFilterChange);
+	serviceTypeSelect.addEventListener('change', handleFilterChange);
 	searchInput.addEventListener('input', handleFilterChange);
 
     // Load More Event
@@ -455,6 +482,7 @@ const initialData = JSON.stringify(allFacilities);
 		countrySelect.value = "";
 		provinceSelect.value = "";
 		citySelect.value = "";
+		serviceTypeSelect.value = "";
 		searchInput.value = "";
 		
 		updateDropdownOptions('init');
