@@ -171,7 +171,7 @@ const initialData = JSON.stringify(allFacilities);
 							<select id="serviceTypeSelect" class="block w-full px-4 h-[52px] pr-10 bg-white border border-slate-200 text-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#127289]/20 focus:border-[#127289] transition-all duration-300 appearance-none cursor-pointer hover:border-slate-300 shadow-sm font-medium text-sm truncate">
 								<option value="">All Types</option>
 								<option value="GP">GP</option>
-								<option value="Hospital">Hospital</option>
+								<option value="Hospital" selected>Hospital</option>
 								<option value="Dental">Dental</option>
 								<option value="Specialist">Specialist</option>
 							</select>
@@ -261,7 +261,10 @@ const initialData = JSON.stringify(allFacilities);
 
 	// -- INIT --
 	function init() {
-		filteredFacilities = [...allFacilities];
+		const serviceType = serviceTypeSelect.value;
+		filteredFacilities = serviceType
+			? allFacilities.filter(f => f.serviceType === serviceType)
+			: [...allFacilities];
 		updateDropdownOptions('init');
 		renderGrid();
 	}
