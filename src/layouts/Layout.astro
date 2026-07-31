@@ -3,9 +3,30 @@ import '../styles/global.css';
 
 interface Props {
 	title: string;
+	description?: string;
+	image?: string;
 }
 
-const { title } = Astro.props;
+const {
+	title,
+	description = 'Search the HealthMetrics direct contract network of hospitals, GPs, dental and specialist facilities worldwide.',
+	image = '/logo.png',
+} = Astro.props;
+
+// Astro.site is only defined when SITE_URL is set at build time. Without it we
+// omit canonical/OG URLs rather than emit a wrong domain.
+const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const imageURL = Astro.site ? new URL(image, Astro.site).href : undefined;
+
+// Analytics. Each loads only when its ID is set, so local dev and previews stay
+// clean unless the variable is deliberately provided.
+//   GA4     - sessions, users, pageviews, plus the custom events in index.astro
+//   Clarity - heatmaps and session recordings for the filter UI
+//   GTM     - optional. Only set this if tags are managed in a GTM container
+//             instead of directly here; loading GA4 both ways double-counts.
+const GA4_ID = import.meta.env.PUBLIC_GA4_ID;
+const CLARITY_ID = import.meta.env.PUBLIC_CLARITY_ID;
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 ---
 
 <!doctype html>
@@ -13,18 +34,80 @@ const { title } = Astro.props;
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.png" />
-		
+		<link rel="icon" type="image/png" href="/favicon.png" />
+
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-		
+
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<meta name="description" content={description} />
+		{canonicalURL && <link rel="canonical" href={canonicalURL} />}
+
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="HealthMetrics" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		{canonicalURL && <meta property="og:url" content={canonicalURL} />}
+		{imageURL && <meta property="og:image" content={imageURL} />}
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{imageURL && <meta name="twitter:image" content={imageURL} />}
+
+		<slot name="head" />
+
+		<!-- dataLayer and gtag are initialised unconditionally so the tracking
+		     calls in the page are safe no-ops when no analytics ID is set. -->
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag() { window.dataLayer.push(arguments); }
+			window.gtag = window.gtag || gtag;
+		</script>
+
+		{GA4_ID && (
+			<>
+				<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}></script>
+				<script is:inline define:vars={{ GA4_ID }}>
+					gtag('js', new Date());
+					gtag('config', GA4_ID);
+				</script>
+			</>
+		)}
+
+		{CLARITY_ID && (
+			<script is:inline define:vars={{ CLARITY_ID }}>
+				(function (c, l, a, r, i, t, y) {
+					c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+					t = l.createElement(r);
+					t.async = 1;
+					t.src = 'https://www.clarity.ms/tag/' + i;
+					y = l.getElementsByTagName(r)[0];
+					y.parentNode.insertBefore(t, y);
+				})(window, document, 'clarity', 'script', CLARITY_ID);
+			</script>
+		)}
+
+		{GTM_ID && (
+			<script is:inline define:vars={{ GTM_ID }}>
+				(function (w, d, s, l, i) {
+					w[l] = w[l] || [];
+					w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+					var f = d.getElementsByTagName(s)[0],
+						j = d.createElement(s),
+						dl = l != 'dataLayer' ? '&l=' + l : '';
+					j.async = true;
+					j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+					f.parentNode.insertBefore(j, f);
+				})(window, document, 'script', 'dataLayer', GTM_ID);
+			</script>
+		)}
 
 		<style is:global>
 			/* GLOBAL STYLES */
-			
+
 			/* 1. Font Settings & Smoothing */
 			body {
 				font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -39,16 +122,16 @@ const { title } = Astro.props;
 				width: 8px;
 			}
 			::-webkit-scrollbar-track {
-				background: #f1f1f1; 
+				background: #f1f1f1;
 			}
 			::-webkit-scrollbar-thumb {
-				background: #cbd5e1; 
+				background: #cbd5e1;
 				border-radius: 4px;
 			}
 			::-webkit-scrollbar-thumb:hover {
-				background: #94a3b8; 
+				background: #94a3b8;
 			}
-			
+
 			/* 3. Legacy Hero Pattern (Optional, kept for safety) */
 			.hero-pattern {
 				background-color: #007BA7;
@@ -57,6 +140,9 @@ const { title } = Astro.props;
 		</style>
 	</head>
 	<body class="bg-gray-50 text-slate-800 min-h-screen flex flex-col">
-		<slot /> 
+		{GTM_ID && (
+			<noscript set:html={`<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`} />
+		)}
+		<slot />
 	</body>
 </html>

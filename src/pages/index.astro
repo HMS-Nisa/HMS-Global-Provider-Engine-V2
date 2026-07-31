@@ -1,62 +1,116 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { parse } from 'csv-parse/sync';
+import providersCsv from '../data/providers.csv?raw';
 
-// --- SERVER-SIDE DATA FETCHING ---
-const SHEET_ID = "1KgN-6huSau90xLvkQ-7e2oQwhdexdqGD5n0vz3SYfFM";
-const SHEET_GID = "1218302279";
-const GOOGLE_SHEET_CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+// --- PROVIDER DATA ---
+// The directory lives in src/data/providers.csv, committed alongside the code.
+// It used to be fetched from a Google Sheet at build time, which meant the site
+// silently served whatever the sheet held on the last deploy. Reading a local
+// file makes the deployed data an explicit, reviewable part of each commit.
+// Refresh it from the sheet with `npm run sync-data`.
+const records = parse(providersCsv, {
+  columns: true,
+  skip_empty_lines: true,
+  trim: true,
+});
 
-let allFacilities = [];
-let error = null;
+const allFacilities = records.map((record: any) => {
+  const toTitleCase = (str: string) => str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
 
-try {
-  const response = await fetch(GOOGLE_SHEET_CSV_URL);
-  if (!response.ok) throw new Error('Failed to fetch data');
-  
-  const csvText = await response.text();
-  
-  const records = parse(csvText, {
-    columns: true,
-    skip_empty_lines: true,
-    trim: true,
-  });
+  const rawName = record['Provider Name'] || record['name'] || "";
+  const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
+  const name = toTitleCase(cleanName);
 
-  allFacilities = records.map((record: any) => {
-    const toTitleCase = (str: string) => str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
+  const rawServiceType = (record['Service Type'] || '').trim().toUpperCase();
+  let serviceType = 'Other';
+  if (rawServiceType === 'GP') serviceType = 'GP';
+  else if (rawServiceType === 'HOSPITAL') serviceType = 'Hospital';
+  else if (rawServiceType === 'DENTAL') serviceType = 'Dental';
+  else if (rawServiceType === 'SPECIALIST') serviceType = 'Specialist';
 
-    const rawName = record['Provider Name'] || record['name'] || "";
-    const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
-    const name = toTitleCase(cleanName);
-
-    const rawServiceType = (record['Service Type'] || '').trim().toUpperCase();
-    let serviceType = 'Other';
-    if (rawServiceType === 'GP') serviceType = 'GP';
-    else if (rawServiceType === 'HOSPITAL') serviceType = 'Hospital';
-    else if (rawServiceType === 'DENTAL') serviceType = 'Dental';
-    else if (rawServiceType === 'SPECIALIST') serviceType = 'Specialist';
-
-    return {
-      name: name,
-      serviceType: serviceType,
-      address: record['Address'] || record['address'] || "",
-      city: record['City'] || record['city'] || "",
-      province: record['Province / State'] || record['province'] || "",
-      country: record['Country'] || record['country'] || "",
-      phone: record['Phone'] || record['phone'] || ""
-    };
-  }).filter((f: any) => f.name);
-
-} catch (e) {
-  console.error("Server fetch failed:", e);
-  error = "Could not load provider data. Please try again later.";
-}
+  return {
+    name: name,
+    serviceType: serviceType,
+    address: record['Address'] || record['address'] || "",
+    city: record['City'] || record['city'] || "",
+    province: record['Province / State'] || record['province'] || "",
+    country: record['Country'] || record['country'] || "",
+    phone: record['Phone'] || record['phone'] || ""
+  };
+}).filter((f: any) => f.name);
 
 const initialData = JSON.stringify(allFacilities);
+
+const PAGE_TITLE = 'HealthMetrics - Direct Contract Facility Directory';
+const PAGE_DESCRIPTION =
+	'Search the HealthMetrics global network of direct contract hospitals, GPs, dental and specialist clinics. Filter by country, city, province and service type.';
+
+// --- STRUCTURED DATA ---
+// The full directory is thousands of rows; embedding all of them would bloat the
+// HTML for no search benefit. ItemList does not have to be exhaustive, so we
+// publish a sample and declare the true total via numberOfItems.
+const SCHEMA_SAMPLE_SIZE = 50;
+
+const SERVICE_TYPE_SCHEMA: Record<string, string> = {
+	Hospital: 'Hospital',
+	GP: 'MedicalClinic',
+	Dental: 'Dentist',
+	Specialist: 'MedicalClinic',
+	Other: 'MedicalOrganization',
+};
+
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'Organization',
+			name: 'HealthMetrics Sdn Bhd',
+			url: 'https://healthmetrics.com',
+			...(Astro.site ? { logo: new URL('/logo.png', Astro.site).href } : {}),
+		},
+		{
+			'@type': 'CollectionPage',
+			name: PAGE_TITLE,
+			description: PAGE_DESCRIPTION,
+			...(Astro.site ? { url: new URL('/', Astro.site).href } : {}),
+			mainEntity: {
+				'@type': 'ItemList',
+				name: 'Direct contract facilities',
+				numberOfItems: allFacilities.length,
+				itemListElement: allFacilities
+					.slice(0, SCHEMA_SAMPLE_SIZE)
+					.map((facility: any, index: number) => ({
+						'@type': 'ListItem',
+						position: index + 1,
+						item: {
+							'@type': SERVICE_TYPE_SCHEMA[facility.serviceType] || 'MedicalOrganization',
+							name: facility.name,
+							...(facility.phone ? { telephone: facility.phone } : {}),
+							address: {
+								'@type': 'PostalAddress',
+								...(facility.address ? { streetAddress: facility.address } : {}),
+								...(facility.city ? { addressLocality: facility.city } : {}),
+								...(facility.province ? { addressRegion: facility.province } : {}),
+								...(facility.country ? { addressCountry: facility.country } : {}),
+							},
+						},
+					})),
+			},
+		},
+	],
+};
 ---
 
-<Layout title="HealthMetrics - Direct Contract Facility Directory">
-	
+<Layout title={PAGE_TITLE} description={PAGE_DESCRIPTION}>
+
+	<script
+		slot="head"
+		type="application/ld+json"
+		is:inline
+		set:html={JSON.stringify(jsonLd)}
+	/>
+
 	<style is:global>
 		/* Enforce Inter font features */
 		body {
@@ -100,7 +154,7 @@ const initialData = JSON.stringify(allFacilities);
 					<img src="/logo.png" alt="HealthMetrics Logo" class="h-8 w-auto object-contain" />
 				</div>
 				<div>
-					<a href="https://healthmetrics.com" target="_blank" class="group inline-flex items-center gap-2 text-[13px] font-semibold tracking-wide text-slate-500 hover:text-[#127289] transition-all px-5 py-2.5 rounded-full hover:bg-slate-50">
+					<a href="https://healthmetrics.com" target="_blank" id="mainSiteLink" class="group inline-flex items-center gap-2 text-[13px] font-semibold tracking-wide text-slate-500 hover:text-[#127289] transition-all px-5 py-2.5 rounded-full hover:bg-slate-50">
 						Visit Main Site 
 						<span class="group-hover:translate-x-0.5 transition-transform text-[#127289]">→</span>
 					</a>
@@ -254,17 +308,58 @@ const initialData = JSON.stringify(allFacilities);
 	// -- STATE --
 	let allFacilities = (window as any).SERVER_DATA || [];
 	let filteredFacilities: any[] = [];
-    
+
     // Pagination State
     let visibleLimit = 50;
     const BATCH_SIZE = 50;
 
+	// -- ANALYTICS --
+	// Everything on this site happens on a single URL, so these events are the
+	// only signal of what people actually look for.
+	// gtag() sends to GA4; the dataLayer push keeps the same events available to
+	// a GTM container. Both are initialised in Layout.astro, so this is a safe
+	// no-op when no analytics ID is configured.
+	function track(event: string, payload: Record<string, any> = {}) {
+		const w = window as any;
+		w.gtag?.('event', event, payload);
+		(w.dataLayer ||= []).push({ event, ...payload });
+	}
+
+	let searchTimer: ReturnType<typeof setTimeout>;
+	function trackSearchDebounced(term: string, resultCount: number) {
+		clearTimeout(searchTimer);
+		if (!term) return;
+		searchTimer = setTimeout(() => {
+			track('directory_search', { search_term: term, result_count: resultCount });
+		}, 800);
+	}
+
 	// -- INIT --
-	function init() {
+	function applyFilters() {
+		const country = countrySelect.value;
+		const province = provinceSelect.value;
+		const city = citySelect.value;
 		const serviceType = serviceTypeSelect.value;
-		filteredFacilities = serviceType
-			? allFacilities.filter(f => f.serviceType === serviceType)
-			: [...allFacilities];
+		const keyword = searchInput.value.toLowerCase().trim();
+
+		filteredFacilities = allFacilities.filter((item: any) => {
+			const matchesGeo = (!country || item.country === country) &&
+							   (!province || item.province === province) &&
+							   (!city || item.city === city);
+
+			const matchesType = !serviceType || item.serviceType === serviceType;
+
+			const matchesKeyword = !keyword ||
+								   item.name.toLowerCase().includes(keyword) ||
+								   item.address.toLowerCase().includes(keyword) ||
+								   item.city?.toLowerCase().includes(keyword);
+
+			return matchesGeo && matchesType && matchesKeyword;
+		});
+	}
+
+	function init() {
+		applyFilters();
 		updateDropdownOptions('init');
 		renderGrid();
 	}
@@ -354,30 +449,31 @@ const initialData = JSON.stringify(allFacilities);
 			updateDropdownOptions('city');
 		}
 
+		applyFilters();
+
+        // Reset pagination when filters change
+        visibleLimit = BATCH_SIZE;
+		renderGrid();
+
 		const country = countrySelect.value;
 		const province = provinceSelect.value;
 		const city = citySelect.value;
 		const serviceType = serviceTypeSelect.value;
 		const keyword = searchInput.value.toLowerCase().trim();
 
-		filteredFacilities = allFacilities.filter(item => {
-			const matchesGeo = (!country || item.country === country) &&
-							   (!province || item.province === province) &&
-							   (!city || item.city === city);
-
-			const matchesType = !serviceType || item.serviceType === serviceType;
-
-			const matchesKeyword = !keyword ||
-								   item.name.toLowerCase().includes(keyword) ||
-								   item.address.toLowerCase().includes(keyword) ||
-								   item.city?.toLowerCase().includes(keyword);
-
-			return matchesGeo && matchesType && matchesKeyword;
-		});
-
-        // Reset pagination when filters change
-        visibleLimit = BATCH_SIZE;
-		renderGrid();
+		if (sourceId === 'searchInput') {
+			trackSearchDebounced(keyword, filteredFacilities.length);
+		} else {
+			track('directory_filter', {
+				filter_name: sourceId.replace('Select', ''),
+				filter_value: target.value || '(all)',
+				result_count: filteredFacilities.length,
+				active_country: country || '(all)',
+				active_city: city || '(all)',
+				active_province: province || '(all)',
+				active_service_type: serviceType || '(all)',
+			});
+		}
 	}
 
 	function renderGrid() {
@@ -455,7 +551,7 @@ const initialData = JSON.stringify(allFacilities);
 							<span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Location</span>
 							<span class="text-[11px] font-bold text-slate-700 group-hover:text-[#127289] transition-colors">${facility.city}, ${facility.province}</span>
 						</div>
-						<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(facility.name + ', ' + facility.address + ', ' + facility.city)}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 text-[#127289] hover:bg-[#127289] hover:text-white transition-all duration-300 border border-slate-100 hover:border-[#127289] shadow-sm group/btn" title="View on Map">
+						<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(facility.name + ', ' + facility.address + ', ' + facility.city)}" target="_blank" rel="noopener noreferrer" data-map-link data-provider="${facility.name}" data-city="${facility.city}" data-country="${facility.country}" data-service-type="${facility.serviceType}" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 text-[#127289] hover:bg-[#127289] hover:text-white transition-all duration-300 border border-slate-100 hover:border-[#127289] shadow-sm group/btn" title="View on Map">
 							<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
 							<span class="text-[10px] font-bold uppercase tracking-wider">Map</span>
 						</a>
@@ -478,8 +574,30 @@ const initialData = JSON.stringify(allFacilities);
         loadMoreBtn.addEventListener('click', () => {
             visibleLimit += BATCH_SIZE;
             renderGrid();
+            track('directory_load_more', {
+                visible_count: Math.min(visibleLimit, filteredFacilities.length),
+                result_count: filteredFacilities.length,
+            });
         });
     }
+
+    // Cards are re-rendered on every filter change, so delegate.
+    if (resultsGrid) {
+        resultsGrid.addEventListener('click', (e) => {
+            const link = (e.target as HTMLElement).closest('[data-map-link]') as HTMLElement | null;
+            if (!link) return;
+            track('provider_map_click', {
+                provider_name: link.dataset.provider,
+                provider_city: link.dataset.city,
+                provider_country: link.dataset.country,
+                provider_service_type: link.dataset.serviceType,
+            });
+        });
+    }
+
+    document.getElementById('mainSiteLink')?.addEventListener('click', () => {
+        track('outbound_click', { link_url: 'https://healthmetrics.com', link_text: 'Visit Main Site' });
+    });
 
 	resetBtn.addEventListener('click', () => {
 		countrySelect.value = "";
@@ -489,12 +607,13 @@ const initialData = JSON.stringify(allFacilities);
 		searchInput.value = "";
 		
 		updateDropdownOptions('init');
-		
-		filteredFacilities = [...allFacilities];
-        
+
+		applyFilters();
+
         // Reset pagination
         visibleLimit = BATCH_SIZE;
 		renderGrid();
+		track('directory_reset', { result_count: filteredFacilities.length });
 	});
 
 	init()

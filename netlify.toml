@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Build-time configuration.
+#
+# SITE_URL          REQUIRED. Production origin, no trailing slash. Drives
+#                   canonical URL, Open Graph tags, robots.txt and sitemap.
+# PUBLIC_GA4_ID     GA4 measurement ID (G-XXXXXXXXXX).
+# PUBLIC_CLARITY_ID Microsoft Clarity project ID.
+# PUBLIC_GTM_ID     Optional. Only if tags move into a GTM container instead -
+#                   loading GA4 both ways double-counts pageviews.
+#
+# These are public client-side IDs - they ship in the served HTML - so pinning
+# them here is safe and keeps the build reproducible. Never put secrets here.
+
+[build.environment]
+  SITE_URL = "https://global.healthmetrics.com"
+  PUBLIC_CLARITY_ID = "xtd9vn6v4x"
+  # PUBLIC_GA4_ID = "G-XXXXXXXXXX"
