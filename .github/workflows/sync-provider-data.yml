@@ -1,0 +1,52 @@
+name: Sync provider data
+
+# Pulls the upstream Google Sheet into src/data/providers.csv once a day and
+# commits the diff only when something changed. The push triggers a Netlify
+# rebuild, so a sheet edit goes live within a day without anyone running
+# `npm run sync-data` by hand.
+#
+# sync-data.mjs refuses to write if the sheet stops being publicly readable or
+# parses to zero rows, so a bad upstream state fails the run instead of
+# committing garbage.
+#
+# Manual run: Actions tab -> "Sync provider data" -> Run workflow.
+
+on:
+  schedule:
+    - cron: '17 0 * * *' # daily 00:17 UTC (08:17 Malaysia time)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-provider-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run sync-data
+
+      - name: Commit and push if data changed
+        run: |
+          if git diff --quiet -- src/data/providers.csv; then
+            echo "No change in provider data; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          count=$(node -e "const{parse}=require('csv-parse/sync');const fs=require('fs');console.log(parse(fs.readFileSync('src/data/providers.csv','utf8'),{columns:true,skip_empty_lines:true,trim:true}).length)")
+          git add src/data/providers.csv
+          git commit -m "Sync provider data from source sheet (${count} providers)"
+          git push
