@@ -59,25 +59,35 @@ All commands are run from the root of the project, from a terminal:
 ## 🏥 Provider data
 
 The directory lives in **`src/data/providers.csv`**, committed to the repo and
-parsed at build time. Editing that file and pushing is what changes the live
-site.
+parsed at build time. **This CSV is the master.** Editing that file and pushing
+is what changes the live site, and because it is in git every data change is an
+explicit, reviewable, revertable commit — a corrupted sheet cannot silently
+destroy live data.
 
-It was previously fetched from a Google Sheet during the build. That meant the
-deployed data was whatever the sheet happened to hold at deploy time — sheet
-edits did not appear until something else triggered a rebuild, and nothing in
-the repo recorded what was actually shipped. Keeping the CSV in git makes each
-data change an explicit, reviewable commit.
-
-The sheet is still the upstream source. To pull its current contents:
+The Google Sheet is still a convenient editing surface for adding and updating
+providers, but it is **no longer the authority**. To pull its current contents:
 
 ```sh
 npm run sync-data
 ```
 
-That rewrites `src/data/providers.csv`; review the diff and commit it. The
-script refuses to write if the sheet stops being publicly readable (Google
-serves an HTML error page with a `200` status, which would otherwise silently
-overwrite the data with garbage) or if it parses to zero rows.
+`sync-data` **merges** the sheet into the master rather than overwriting it:
+
+- The sheet can **add** providers and **update** fields with real values.
+- A **blank** cell in the sheet **never wipes** a value the master already holds
+  — so addresses (and any other data) enriched directly in the CSV survive syncs.
+- It **refuses to run** if the sheet stops being publicly readable (Google serves
+  an HTML error page with a `200` status), if it parses to zero rows, or if the
+  sheet suddenly returns fewer than 90% of the master's rows (corruption guard).
+  Override a legitimate bulk removal with `SYNC_FORCE=1`; tune the threshold with
+  `SYNC_MIN_RATIO`.
+
+Review the diff and commit. Output is written in the sheet's exact CSV byte
+format, so a no-op sync produces no diff.
+
+Note: because the sheet is a *surface*, not the authority, editing an address in
+the CSV directly (via a PR) is the reliable way to change it — a non-blank sheet
+value for the same provider would otherwise win on the next sync.
 
 Expected columns: `Country`, `Province / State`, `City`, `Provider Name`,
 `Service Type`, `Address`. `Service Type` is matched case-insensitively against
