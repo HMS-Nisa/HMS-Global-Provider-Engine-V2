@@ -1,9 +1,14 @@
 name: Sync provider data
 
-# Pulls the upstream Google Sheet into src/data/providers.csv once a day and
-# commits the diff only when something changed. The push triggers a Netlify
-# rebuild, so a sheet edit goes live within a day without anyone running
-# `npm run sync-data` by hand.
+# Pulls the upstream Google Sheet into src/data/providers.csv and commits the
+# diff only when something changed. The push triggers a Netlify rebuild.
+#
+# The daily schedule has been removed: the committed CSV is now the master and
+# is maintained directly from the panel export, not the sheet. The sheet has
+# diverged (older addresses, Turkey still listed), so an automatic sync would
+# overwrite the enriched addresses and re-add removed providers. This workflow
+# is kept for MANUAL dispatch only, and should only be run once the sheet has
+# been re-aligned with the committed CSV.
 #
 # sync-data.mjs refuses to write if the sheet stops being publicly readable or
 # parses to zero rows, so a bad upstream state fails the run instead of
@@ -12,8 +17,6 @@ name: Sync provider data
 # Manual run: Actions tab -> "Sync provider data" -> Run workflow.
 
 on:
-  schedule:
-    - cron: '17 0 * * *' # daily 00:17 UTC (08:17 Malaysia time)
   workflow_dispatch:
 
 permissions:
