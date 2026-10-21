@@ -13,8 +13,9 @@
 	} catch (e) { return; }
 
 	// [name, lat, lng, weight 0..1]
+	// Tier 1 - the direct-contract network, dense across Southeast Asia.
 	var KL = ['Kuala Lumpur', 3.139, 101.687, 1];
-	var CITIES = [
+	var NETWORK = [
 		KL,
 		['Penang', 5.414, 100.329, .7], ['Johor Bahru', 1.492, 103.741, .6],
 		['Ipoh', 4.597, 101.09, .45], ['Kuching', 1.553, 110.359, .45],
@@ -39,6 +40,27 @@
 		['Istanbul', 41.008, 28.978, .35], ['Ankara', 39.934, 32.86, .25],
 		['Bursa', 40.195, 29.06, .2], ['Adana', 37, 35.321, .2],
 	];
+	// Tier 2 - "partners worldwide" (IAG alliance reach): softer nodes on
+	// major cities across every region, arcs back to the Assistance Centre.
+	var PARTNERS = [
+		['London', 51.507, -.128, .5], ['Paris', 48.857, 2.352, .4],
+		['Frankfurt', 50.11, 8.682, .4], ['Zurich', 47.377, 8.542, .35],
+		['Madrid', 40.417, -3.704, .3], ['Amsterdam', 52.368, 4.904, .3],
+		['Stockholm', 59.329, 18.069, .25], ['Milan', 45.464, 9.19, .3],
+		['Athens', 37.984, 23.728, .25], ['Warsaw', 52.23, 21.011, .25],
+		['Dubai', 25.204, 55.271, .45], ['Doha', 25.286, 51.531, .3],
+		['Riyadh', 24.713, 46.675, .3], ['Tel Aviv', 32.085, 34.782, .25],
+		['Tokyo', 35.677, 139.65, .45], ['Seoul', 37.566, 126.978, .4],
+		['Shanghai', 31.23, 121.474, .4], ['Hong Kong', 22.32, 114.17, .45],
+		['Taipei', 25.033, 121.565, .3],
+		['Sydney', -33.869, 151.209, .4], ['Melbourne', -37.814, 144.963, .35],
+		['Auckland', -36.849, 174.763, .25],
+		['New York', 40.713, -74.006, .5], ['Los Angeles', 34.052, -118.244, .4],
+		['Toronto', 43.653, -79.383, .35], ['Mexico City', 19.433, -99.133, .3],
+		['Sao Paulo', -23.551, -46.633, .35], ['Buenos Aires', -34.603, -58.382, .25],
+		['Johannesburg', -26.204, 28.047, .3], ['Nairobi', -1.292, 36.822, .25],
+		['Cairo', 30.044, 31.236, .3],
+	];
 
 	function boot() {
 		var s = document.createElement('script');
@@ -52,12 +74,16 @@
 		var w = holder.parentElement.getBoundingClientRect().width * 0.47;
 		var size = Math.max(Math.min(w, 560), 380);
 
-		var points = CITIES.map(function (c) {
-			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5 };
-		});
-		var arcs = CITIES.filter(function (c) { return c !== KL && c[3] >= 0.3; }).map(function (c) {
-			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2] };
-		});
+		var points = NETWORK.map(function (c) {
+			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#3FC1D4' };
+		}).concat(PARTNERS.map(function (c) {
+			return { name: c[0], lat: c[1], lng: c[2], size: 0.01 + c[3] * 0.02, r: 0.2 + c[3] * 0.4, color: 'rgba(233,241,242,.75)' };
+		}));
+		var arcs = NETWORK.filter(function (c) { return c !== KL && c[3] >= 0.3; }).map(function (c) {
+			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(63,193,212,.85)', 'rgba(63,193,212,.05)'] };
+		}).concat(PARTNERS.filter(function (c) { return c[3] >= 0.3; }).map(function (c) {
+			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(233,241,242,.55)', 'rgba(233,241,242,.03)'] };
+		}));
 
 		var globe = Globe({ rendererConfig: { alpha: true, antialias: true } })(holder)
 			.width(size).height(size)
@@ -70,9 +96,9 @@
 			.pointLat('lat').pointLng('lng')
 			.pointAltitude('size')
 			.pointRadius('r')
-			.pointColor(function () { return '#3FC1D4'; })
+			.pointColor('color')
 			.arcsData(arcs)
-			.arcColor(function () { return ['rgba(63,193,212,.85)', 'rgba(63,193,212,.05)']; })
+			.arcColor('color')
 			.arcAltitudeAutoScale(0.35)
 			.arcStroke(0.45)
 			.arcDashLength(0.5)
@@ -80,9 +106,11 @@
 			.arcDashAnimateTime(3200);
 
 		globe.controls().autoRotate = true;
-		globe.controls().autoRotateSpeed = 0.35;
+		globe.controls().autoRotateSpeed = 0.5;
 		globe.controls().enableZoom = false;
-		globe.pointOfView({ lat: 8, lng: 105, altitude: 1.9 }, 0);
+		// Start framed on Southeast Asia (the direct network), then the slow
+		// rotation sweeps the worldwide partner nodes through view.
+		globe.pointOfView({ lat: 10, lng: 100, altitude: 2.1 }, 0);
 
 		holder.classList.add('on');
 		document.getElementById('heroGrid').classList.add('globe-on');
