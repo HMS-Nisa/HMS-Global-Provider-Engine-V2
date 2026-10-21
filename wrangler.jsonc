@@ -1,0 +1,14 @@
+{
+	// Cloudflare Workers static-assets deploy of the HMS Assistance site.
+	// The HealthMetrics account owns the healthmetrics.com zone, so the
+	// custom domain global.healthmetrics.com can attach directly.
+	"name": "global-healthmetrics",
+	"account_id": "8e292940df0e13870c713d7fe7c5eb78",
+	"compatibility_date": "2026-10-01",
+	// Serves the Assistance site, with the provider directory mounted at
+	// /directory/ (built by `npm run build-directory`, which also refreshes
+	// the copy in site/directory/). Deploy = npx wrangler deploy.
+	"assets": {
+		"directory": "./site"
+	}
+}
