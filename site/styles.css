@@ -496,3 +496,15 @@ footer .trust .on-dark{display:none}
     transition:opacity .22s ease,transform .25s cubic-bezier(.22,1,.36,1)}
   .nav .mega:hover .mm,.nav .mega:focus-within .mm{opacity:1;pointer-events:auto;transform:none}
 }
+
+/* ---- Hero globe (lite mockup, globe-hero.js). Desktop only; on mobile,
+   reduced motion or no WebGL the hero falls back to single-column text. ---- */
+.hero-globe{position:relative;min-height:420px;display:none}
+.hero-globe canvas{outline:none}
+@media (min-width:861px){
+  .hero-globe.on{display:block}
+  .hero-globe::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(closest-side,transparent 72%,var(--band,#0F323D) 100%)}
+}
+#heroGrid{grid-template-columns:1fr}
+@media (min-width:861px){#heroGrid.globe-on{grid-template-columns:1fr .9fr;align-items:center}}

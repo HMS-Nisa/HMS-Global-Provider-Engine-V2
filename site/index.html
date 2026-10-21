@@ -63,7 +63,7 @@ window.gtag = window.gtag || gtag;
 <main id="top">
 <section class="hero">
     <div class="wrap">
-      <div class="hero-grid hero-solo">
+      <div class="hero-grid" id="heroGrid">
         <div>
           <p class="eyebrow">Medical and travel assistance, worldwide</p>
           <h1 style="margin-top:12px">Wherever your people are, <em>someone's looking out for them.</em></h1>
@@ -73,6 +73,7 @@ window.gtag = window.gtag || gtag;
             <a class="btn btn-ghost" href="network.html">Explore the network</a>
           </div>
         </div>
+        <div class="hero-globe" id="heroGlobe" aria-hidden="true"></div>
       </div>
     </div>
   </section>
@@ -145,5 +146,6 @@ window.gtag = window.gtag || gtag;
 <script src="app.js"></script>
 <script src="analytics.js"></script>
 <script src="motion.js" defer></script>
+<script src="globe-hero.js" defer></script>
 
 </body></html>

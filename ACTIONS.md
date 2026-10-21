@@ -94,3 +94,13 @@ Chronological record of what was done, in order.
   all 16 pages, service-worker cache bumped to v4.
 - Verified: reveals + count-up firing, console clean, desktop dropdown and
   mobile menu intact.
+
+## 8. Hero globe mockup (2026-10-21)
+
+- Lite globe.gl mockup on the homepage hero (presentation wow factor):
+  night-earth globe, cyan provider-city points (~45 hardcoded showcase
+  cities), pulse arcs from KL, slow auto-rotate framed on Southeast Asia.
+- Lazy-loaded from CDN after first paint; desktop only; skipped under
+  reduced motion / no WebGL, where the hero stays single-column text.
+  Not yet wired to providers.json (mockup set). Files: site/globe-hero.js,
+  hero markup + CSS, SW cache v5.
