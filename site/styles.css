@@ -510,15 +510,14 @@ footer .trust .on-dark{display:none}
 #heroGrid{grid-template-columns:1fr}
 @media (min-width:861px){#heroGrid.globe-on{grid-template-columns:1fr .9fr;align-items:center}}
 
-/* ---- Coverage map, dark theme: remap the inline SVG's light palette so
-   the card sits inside the band instead of glaring against it. ---- */
-.map-card{background:#0D2731;border-color:#1E4552}
-.map-card .map > rect{fill:#0D2731}
-.map-card .map path[fill="#F7F7F4"]{fill:#16353F;stroke:#2A5865;stroke-width:.9}
-.map-card .map path[fill="#FFFFFF"]{fill:#122C36;stroke:#1F4653}
-.map-card .map path[fill="#0F323D"]{fill:#3FC1D4;stroke:rgba(13,39,49,.85)}
-.map-card .map circle[fill="#FFFFFF"]{fill:#0D2731}
-.map-card .map text[fill="#0F323D"]{fill:#E9F1F2;stroke:#0D2731}
-.map-card .map text[fill="#9AAAB0"]{fill:rgba(233,241,242,.38);stroke:none}
+/* ---- Coverage map: a light panel on the dark band for contrast, but
+   teal-tinted rather than stark white so it reads as one palette. ---- */
+.map-card{background:#E7EFF0;border-color:#35616F}
+.map-card .map > rect{fill:#E7EFF0}
+.map-card .map path[fill="#F7F7F4"]{fill:#F3F6F4;stroke:#AFC6CC;stroke-width:.9}
+.map-card .map path[fill="#FFFFFF"]{fill:#EDF3F2;stroke:#C2D4D8}
+.map-card .map path[fill="#0F323D"]{fill:#127289;stroke:#FFFFFF}
+.map-card .map circle[fill="#FFFFFF"]{fill:#FFFFFF}
+.map-card .map text[fill="#9AAAB0"]{fill:#8FA6AD}
 .cc-list li{transition:border-color .2s}
 .cc-list li:hover{border-color:var(--cyan)}
