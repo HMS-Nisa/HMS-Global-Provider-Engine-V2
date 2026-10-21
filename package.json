@@ -8,7 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "sync-data": "node scripts/sync-data.mjs"
+    "sync-data": "node scripts/sync-data.mjs",
+    "provider": "node scripts/provider.mjs",
+    "build-finder": "node scripts/build-finder-data.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

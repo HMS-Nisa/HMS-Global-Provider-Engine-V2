@@ -1,44 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { parse } from 'csv-parse/sync';
-import providersCsv from '../data/providers.csv?raw';
+import providers from '../data/providers.json';
 
 // --- PROVIDER DATA ---
-// The directory lives in src/data/providers.csv, committed alongside the code.
-// It used to be fetched from a Google Sheet at build time, which meant the site
-// silently served whatever the sheet held on the last deploy. Reading a local
-// file makes the deployed data an explicit, reviewable part of each commit.
-// Refresh it from the sheet with `npm run sync-data`.
-const records = parse(providersCsv, {
-  columns: true,
-  skip_empty_lines: true,
-  trim: true,
-});
-
-const allFacilities = records.map((record: any) => {
-  const toTitleCase = (str: string) => str.toLowerCase().replace(/\b\w/g, (s: string) => s.toUpperCase());
-
-  const rawName = record['Provider Name'] || record['name'] || "";
-  const cleanName = rawName.replace(/^["'!]+|["'!]+$/g, '').trim();
-  const name = toTitleCase(cleanName);
-
-  const rawServiceType = (record['Service Type'] || '').trim().toUpperCase();
-  let serviceType = 'Other';
-  if (rawServiceType === 'GP') serviceType = 'GP';
-  else if (rawServiceType === 'HOSPITAL') serviceType = 'Hospital';
-  else if (rawServiceType === 'DENTAL') serviceType = 'Dental';
-  else if (rawServiceType === 'SPECIALIST') serviceType = 'Specialist';
-
-  return {
-    name: name,
-    serviceType: serviceType,
-    address: record['Address'] || record['address'] || "",
-    city: record['City'] || record['city'] || "",
-    province: record['Province / State'] || record['province'] || "",
-    country: record['Country'] || record['country'] || "",
-    phone: record['Phone'] || record['phone'] || ""
-  };
-}).filter((f: any) => f.name);
+// The directory lives in src/data/providers.json, committed alongside the code.
+// The JSON is the master: fields are already normalised (clean title-cased
+// names, canonical serviceType), so the build uses them as-is. Add or remove
+// providers with `npm run provider -- add|remove`, or refresh from the Google
+// Sheet with `npm run sync-data`; either way the JSON diff is reviewable in
+// the commit.
+const allFacilities = providers.map((p) => ({ ...p, phone: '' }));
 
 const initialData = JSON.stringify(allFacilities);
 

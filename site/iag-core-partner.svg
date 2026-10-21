@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="336" viewBox="0 0 336 336">
+  <g id="Group_1668" data-name="Group 1668" transform="translate(11331 -507)">
+    <circle id="Ellipse_1" data-name="Ellipse 1" cx="127.5" cy="127.5" r="127.5" transform="translate(-11290 548)" fill="#74b959"/>
+    <g id="Ellipse_2" data-name="Ellipse 2" transform="translate(-11331 507)" fill="none" stroke="#74b959" stroke-width="5">
+      <circle cx="168" cy="168" r="168" stroke="none"/>
+      <circle cx="168" cy="168" r="165.5" fill="none"/>
+    </g>
+    <g id="Ellipse_3" data-name="Ellipse 3" transform="translate(-11319 519)" fill="none" stroke="#74b959" stroke-width="5">
+      <circle cx="156" cy="156" r="156" stroke="none"/>
+      <circle cx="156" cy="156" r="153.5" fill="none"/>
+    </g>
+    <g id="Ellipse_4" data-name="Ellipse 4" transform="translate(-11306 532)" fill="none" stroke="#74b959" stroke-width="5">
+      <circle cx="143.5" cy="143.5" r="143.5" stroke="none"/>
+      <circle cx="143.5" cy="143.5" r="141" fill="none"/>
+    </g>
+    <g id="Group_1664" data-name="Group 1664" transform="translate(0 3)">
+      <text id="CP" transform="translate(-11228 679)" fill="#fff" font-size="99" font-family="Avenir-Black, Avenir" font-weight="800"><tspan x="0" y="0">CP</tspan></text>
+      <g id="Group_1663" data-name="Group 1663" transform="translate(2 -19)">
+        <path id="Icon_awesome-star" data-name="Icon awesome-star" d="M18.232,1.252l-4.591,9.309-10.273,1.5A2.251,2.251,0,0,0,2.123,15.9L9.555,23.14,7.8,33.37a2.249,2.249,0,0,0,3.262,2.37l9.19-4.83,9.19,4.83A2.25,2.25,0,0,0,32.7,33.37L30.945,23.14,38.377,15.9a2.251,2.251,0,0,0-1.245-3.839l-10.273-1.5L22.268,1.252a2.252,2.252,0,0,0-4.036,0Z" transform="translate(-11233.441 717.999)" fill="#fff"/>
+        <path id="Icon_awesome-star-2" data-name="Icon awesome-star" d="M18.232,1.252l-4.591,9.309-10.273,1.5A2.251,2.251,0,0,0,2.123,15.9L9.555,23.14,7.8,33.37a2.249,2.249,0,0,0,3.262,2.37l9.19-4.83,9.19,4.83A2.25,2.25,0,0,0,32.7,33.37L30.945,23.14,38.377,15.9a2.251,2.251,0,0,0-1.245-3.839l-10.273-1.5L22.268,1.252a2.252,2.252,0,0,0-4.036,0Z" transform="translate(-11185.441 717.999)" fill="#fff"/>
+        <path id="Icon_awesome-star-3" data-name="Icon awesome-star" d="M18.232,1.252l-4.591,9.309-10.273,1.5A2.251,2.251,0,0,0,2.123,15.9L9.555,23.14,7.8,33.37a2.249,2.249,0,0,0,3.262,2.37l9.19-4.83,9.19,4.83A2.25,2.25,0,0,0,32.7,33.37L30.945,23.14,38.377,15.9a2.251,2.251,0,0,0-1.245-3.839l-10.273-1.5L22.268,1.252a2.252,2.252,0,0,0-4.036,0Z" transform="translate(-11137.441 717.999)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>
