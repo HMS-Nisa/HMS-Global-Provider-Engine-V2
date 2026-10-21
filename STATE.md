@@ -1,6 +1,6 @@
 # Project State — HMS Global Provider (global.healthmetrics.com)
 
-_Last updated: 2026-10-21_
+_Last updated: 2026-10-21 (new UI live)_
 
 ## Hosting
 
@@ -39,21 +39,24 @@ _Last updated: 2026-10-21_
 - Tags live: Clarity `xtd9vn6v4x`. GA4/GTM not enabled (stubs in place).
   Full inventory: `MIGRATION-TAGS.md`.
 
-## Pending
+## Live since 2026-10-21
 
-1. **New UI go-live** — `wrangler.jsonc` now points at `./site`: the
-   Assistance site with the full directory mounted at `/directory/`
-   (Astro built with `base: '/directory'` via `npm run build-directory`).
-   Nav restructured on all 16 pages: "Our Network" mega menu (Coverage &
-   Hospital Finder / Full Provider Directory / Join our Network), mobile
-   menu + footer links, finder cross-link on network.html. Verified
-   locally; go-live = `npx wrangler deploy` after Khairul's review.
-2. **SharePoint co-maintenance** — colleague edits an Excel on SharePoint,
+The Assistance site IS the live site (worker version ee3d137c): new UI at
+the root with motion layer, hero globe and homepage directory strip; full
+directory at /directory/ (8,127); hospital finder at /network (1,681);
+Atlas beta removed per Max's update. Workers serves clean URLs
+(.html 307s to extensionless).
+
+## Pending
+1. **SharePoint co-maintenance** — colleague edits an Excel on SharePoint,
    synced into providers.json. Options scoped (Claude-driven sync now, or
    Cloudflare cron + KV later; cron needs an "anyone with link" share or a
    Graph app registration). Khairul to confirm tenant sharing settings.
-3. **Commit** — branch `new-ui-migration` holds all of the above, uncommitted
-   at Khairul's request.
+2. **Merge to main** — all work is committed and pushed on
+   `new-ui-migration`; PR/merge to main still open.
+3. **CJ check** — ~9 possible new sheet rows (ID +4, SG +4, CN +1) to
+   confirm before merging into the master; the Google Sheet itself is
+   stale (pre-CJ dataset) and should be refreshed or retired.
 
 ## Session log
 
