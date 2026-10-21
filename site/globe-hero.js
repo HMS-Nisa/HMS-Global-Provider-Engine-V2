@@ -108,12 +108,28 @@
 		globe.controls().autoRotate = true;
 		globe.controls().autoRotateSpeed = 0.5;
 		globe.controls().enableZoom = false;
-		// Start framed on Southeast Asia (the direct network), then the slow
+		// Start pulled back and framed on Southeast Asia; the entrance glides
+		// in (CSS fade/scale) while the camera settles closer, then the slow
 		// rotation sweeps the worldwide partner nodes through view.
-		globe.pointOfView({ lat: 10, lng: 100, altitude: 2.1 }, 0);
+		globe.pointOfView({ lat: 10, lng: 100, altitude: 3.4 }, 0);
 
-		holder.classList.add('on');
-		document.getElementById('heroGrid').classList.add('globe-on');
+		var revealed = false;
+		function reveal() {
+			if (revealed) return;
+			revealed = true;
+			holder.classList.add('on');
+			document.getElementById('heroGrid').classList.add('globe-on');
+			requestAnimationFrame(function () {
+				requestAnimationFrame(function () {
+					holder.classList.add('in');
+					globe.pointOfView({ lat: 10, lng: 100, altitude: 2.1 }, 2400);
+				});
+			});
+		}
+		// Wait for the earth texture so the globe never pops in half-drawn;
+		// fall back after 3s in case the ready event never fires.
+		if (globe.onGlobeReady) globe.onGlobeReady(reveal);
+		setTimeout(reveal, 3000);
 	}
 
 	if ('requestIdleCallback' in window) requestIdleCallback(boot, { timeout: 2500 });
