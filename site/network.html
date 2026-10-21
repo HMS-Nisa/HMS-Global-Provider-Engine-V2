@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Network · HealthMetrics Assistance</title>
-<meta name="description" content="Map and hospital finder for the HealthMetrics network.">
+<meta name="description" content="Coverage map of the HealthMetrics network, with the full provider directory a click away.">
 <meta name="theme-color" content="#0F323D">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="HMS Assistance">
@@ -19,12 +19,12 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="HealthMetrics">
 <meta property="og:title" content="Network · HealthMetrics Assistance">
-<meta property="og:description" content="Map and hospital finder for the HealthMetrics network.">
+<meta property="og:description" content="Coverage map of the HealthMetrics network, with the full provider directory a click away.">
 <meta property="og:url" content="https://global.healthmetrics.com/network.html">
 <meta property="og:image" content="https://global.healthmetrics.com/logo_dark.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Network · HealthMetrics Assistance">
-<meta name="twitter:description" content="Map and hospital finder for the HealthMetrics network.">
+<meta name="twitter:description" content="Coverage map of the HealthMetrics network, with the full provider directory a click away.">
 <meta name="twitter:image" content="https://global.healthmetrics.com/logo_dark.png">
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -56,7 +56,7 @@ window.gtag = window.gtag || gtag;
         </div></div></li>
       <li class="mega"><a href="network.html" class="mega-t" aria-current="page">Our Network</a>
         <div class="mm"><div class="wrap">
-          <div><h6>Network</h6><div class="mm-col"><a class="mm-i" href="network.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/><path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4"/></svg></span><span><b>Coverage &amp; Hospital Finder</b><small>Map and finder: hospitals and specialist centres across the region.</small></span></a><a class="mm-i" href="directory/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></span><span><b>Full Provider Directory</b><small>Check the full panel — hospitals, GPs, dental and specialists.</small></span></a><a class="mm-i" href="providers.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span><span><b>Join our Network</b><small>For hospitals, clinics and ambulance providers.</small></span></a></div></div>
+          <div><h6>Network</h6><div class="mm-col"><a class="mm-i" href="network.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4" cy="5" r="2"/><circle cx="20" cy="5" r="2"/><circle cx="4" cy="19" r="2"/><circle cx="20" cy="19" r="2"/><path d="M6 6l4 4M18 6l-4 4M6 18l4-4M18 18l-4-4"/></svg></span><span><b>Coverage Map</b><small>Where we operate across the region.</small></span></a><a class="mm-i" href="directory/"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></span><span><b>Full Provider Directory</b><small>Check the full panel — hospitals, GPs, dental and specialists.</small></span></a><a class="mm-i" href="providers.html"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span><span><b>Join our Network</b><small>For hospitals, clinics and ambulance providers.</small></span></a></div></div>
         </div></div></li>
       <li><a href="about.html">About Us</a></li>
       <li class="m-only"><a href="providers.html">Join our network</a></li>
@@ -99,10 +99,8 @@ window.gtag = window.gtag || gtag;
       <div class="country"><span>Worldwide</span><div class="bar"><i style="width:100%;background:var(--cyan)"></i></div><span class="v">250,000+</span></div></div>
       </div>
     <div class="finder" id="finder"><p class="eyebrow">Find a hospital</p>
-        <div class="finder-controls"><input id="q" type="search" placeholder="Hospital, city or state, e.g. Penang, Bali, Bangkok" aria-label="Search hospitals"><select id="cc" aria-label="Country"><option value="">All countries</option></select></div>
-        <div class="results" tabindex="0"><table><thead><tr><th>Facility</th><th>City</th><th class="hide-s">State / province</th></tr></thead><tbody id="rows"></tbody></table></div>
-        <p class="count" id="count"></p>
-        <p class="count">Members can search the <a href="directory/">full provider directory</a>.</p></div>
+        <p class="lede" style="margin-top:10px">Search the full provider directory — hospitals, specialist centres, GPs and dental, across every country we cover.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px"><a class="btn btn-primary" href="directory/">Open the provider directory</a></div></div>
   </div></div>
 </section>
 <section style="padding-top:0"><div class="wrap"><div class="cta-band"><div><h2>Need a provider we do not list?</h2><p class="lede">Our team can place cases outside our direct network through IAG partners in 140+ countries.</p></div>
@@ -127,6 +125,5 @@ window.gtag = window.gtag || gtag;
 <script src="app.js"></script>
 <script src="analytics.js"></script>
 <script src="motion.js" defer></script>
-<script src="finder-data.js"></script><script src="finder.js"></script>
 </body>
 </html>
