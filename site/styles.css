@@ -503,8 +503,6 @@ footer .trust .on-dark{display:none}
 .hero-globe canvas{outline:none}
 @media (min-width:861px){
   .hero-globe.on{display:block}
-  .hero-globe::after{content:"";position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(closest-side,transparent 72%,var(--band,#0F323D) 100%)}
 }
 #heroGrid{grid-template-columns:1fr}
 @media (min-width:861px){#heroGrid.globe-on{grid-template-columns:1fr .9fr;align-items:center}}
