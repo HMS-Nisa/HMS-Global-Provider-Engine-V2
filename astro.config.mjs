@@ -17,5 +17,10 @@ if (!SITE_URL) {
 
 export default defineConfig({
   site: SITE_URL,
+  // The directory is mounted as a subpage of the Assistance site. With this
+  // base, built asset URLs and the canonical/OG URLs all point under
+  // /directory/. scripts/build-directory.mjs copies the build into
+  // site/directory/ for the worker to serve.
+  base: '/directory',
   integrations: [tailwind(), sitemap()],
 });

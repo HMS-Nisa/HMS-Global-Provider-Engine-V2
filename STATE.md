@@ -41,11 +41,13 @@ _Last updated: 2026-10-21_
 
 ## Pending
 
-1. **New UI swap** — HealthMetrics Assistance site (from Max's artifact) sits
-   ready in `site/` with tags, SEO, robots/sitemap and analytics events
-   injected. Swap = point `wrangler.jsonc` assets at `./site`, deploy.
-   Waiting on Khairul's review. Note: its finder covers hospitals/specialists
-   only — GP/dental/optical intentionally not listed.
+1. **New UI go-live** — `wrangler.jsonc` now points at `./site`: the
+   Assistance site with the full directory mounted at `/directory/`
+   (Astro built with `base: '/directory'` via `npm run build-directory`).
+   Nav restructured on all 16 pages: "Our Network" mega menu (Coverage &
+   Hospital Finder / Full Provider Directory / Join our Network), mobile
+   menu + footer links, finder cross-link on network.html. Verified
+   locally; go-live = `npx wrangler deploy` after Khairul's review.
 2. **SharePoint co-maintenance** — colleague edits an Excel on SharePoint,
    synced into providers.json. Options scoped (Claude-driven sync now, or
    Cloudflare cron + KV later; cron needs an "anyone with link" share or a

@@ -68,3 +68,17 @@ Chronological record of what was done, in order.
 - SharePoint Excel co-maintenance + daily cron: pending tenant sharing check.
 - Netlify account/site transfer to nisa@: moot after Cloudflare move.
 - Branch `new-ui-migration`: commit held by Khairul.
+
+## 6. Directory as subpage + nav restructure (2026-10-21)
+
+- Astro directory now builds with `base: '/directory'`; `npm run
+  build-directory` mounts it at `site/directory/` (canonical, OG and JSON-LD
+  all point at /directory/).
+- Nav restructured across all 16 Assistance pages (subagent): "Our Network"
+  is a mega menu — Coverage & Hospital Finder / Full Provider Directory /
+  Join our Network; mobile menu gained a Provider Directory entry; footer
+  order is Network · Directory · How it works · Contact; network.html finder
+  links members to the full directory.
+- sitemap.xml gained /directory/; wrangler.jsonc switched to serve ./site.
+- Verified locally: mega dropdown, mobile menu, directory page with 8,127
+  records and working filters. Go-live awaits review + `wrangler deploy`.

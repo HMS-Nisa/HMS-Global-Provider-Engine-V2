@@ -10,7 +10,8 @@
     "astro": "astro",
     "sync-data": "node scripts/sync-data.mjs",
     "provider": "node scripts/provider.mjs",
-    "build-finder": "node scripts/build-finder-data.mjs"
+    "build-finder": "node scripts/build-finder-data.mjs",
+    "build-directory": "astro build && node scripts/build-directory.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

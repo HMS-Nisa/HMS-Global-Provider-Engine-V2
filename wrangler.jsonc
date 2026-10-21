@@ -5,11 +5,10 @@
 	"name": "global-healthmetrics",
 	"account_id": "8e292940df0e13870c713d7fe7c5eb78",
 	"compatibility_date": "2026-10-01",
-	// Phase 1 (host move): serve ./dist — the current Astro directory site,
-	// byte-for-byte what Netlify serves today, built with the same env
-	// (SITE_URL + Clarity xtd9vn6v4x).
-	// Phase 2 (UI swap, after review): change this to ./site and redeploy.
+	// Serves the Assistance site, with the provider directory mounted at
+	// /directory/ (built by `npm run build-directory`, which also refreshes
+	// the copy in site/directory/). Deploy = npx wrangler deploy.
 	"assets": {
-		"directory": "./dist"
+		"directory": "./site"
 	}
 }
