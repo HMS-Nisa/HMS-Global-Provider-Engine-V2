@@ -104,3 +104,15 @@ Chronological record of what was done, in order.
   reduced motion / no WebGL, where the hero stays single-column text.
   Not yet wired to providers.json (mockup set). Files: site/globe-hero.js,
   hero markup + CSS, SW cache v5.
+
+## 9. Max's artifact update ported + list check (2026-10-21)
+
+- Max's updated export removes the Atlas AI bill-check beta everywhere.
+  Ported into site/: mm-feat promo card off all 16 mega menus, Atlas asides
+  and scripts off cost-containment.html and data.html, atlas.js deleted,
+  ask.js entry renamed to "Data & Insights" (eyebrow updated too), mega-menu
+  grid back to two columns, SW cache v6.
+- Max's "go up with the latest list": the Google Sheet turned out stale
+  (9,935 rows = pre-CJ dataset incl. the dropped MY blank-address rows).
+  Master stays at the curated 8,127; a handful of possible new sheet rows
+  (ID +4, SG +4, CN +1) to be confirmed with CJ before merging.

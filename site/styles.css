@@ -318,7 +318,7 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
 .nav .mega:hover .mm,.nav .mega:focus-within .mm{display:block}
 .nav .wrap>ul{align-items:center}
 .nav .mega>a{display:inline-block;padding-block:22px}
-.nav .mm .wrap{display:grid;grid-template-columns:1fr 1.6fr 280px;gap:36px;padding-block:28px 32px;align-items:start;min-height:0}
+.nav .mm .wrap{display:grid;grid-template-columns:1fr 1.6fr;gap:36px;padding-block:28px 32px;align-items:start;min-height:0}
 .nav .mm h6{font:500 .72rem var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2);margin:0 0 12px}
 .mm-col{display:grid;gap:2px;align-content:start}
 .mm-col.two{grid-template-columns:1fr 1fr;column-gap:12px}

@@ -12,7 +12,7 @@
     {id:'case-management.html',t:'Case Management',d:'A named case manager, around the clock.',k:'case manager management follow monitor update doctor medical oversight family translation 24/7 support'},
     {id:'settlement.html',t:'Cross-border Settlement',d:'Pay locally, settle once in your currency.',k:'currency currencies fx exchange invoice usd eur myr sgd idr thb pay payment settle settlement local bank'},
     {id:'hub.html',t:'HMS Hub',d:'Plug in once, send cases straight in.',k:'api integrate integration platform portal system hub connect software adjudicate self-service tool technology'},
-    {id:'data.html',t:'Atlas Insights',d:'Know what care costs; check a bill.',k:'data insight insights benchmark benchmarks pricing analytics report dashboard atlas cost trends utilisation mcp ai'},
+    {id:'data.html',t:'Data & Insights',d:'Know what care costs before you price it.',k:'data insight insights benchmark benchmarks pricing analytics report dashboard atlas cost trends utilisation mcp ai'},
     {id:'providers.html',t:'For providers',d:'Join our network.',k:'join network provider providers hospital clinic ambulance operator pharmacy lab partner with you become supplier vendor house call'},
     {id:'contact.html',t:'Contact us',d:'Talk to our partnerships team.',k:'contact talk call email speak sales partnership quote price office address meet'}
   ];
