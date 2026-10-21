@@ -8,11 +8,14 @@
 //
 // Run with `npm run sync-data`, then review the diff and commit.
 // Direct add/remove without the sheet: `npm run provider -- add|remove ...`.
+// From a downloaded SharePoint workbook: `npm run sync-xlsx -- <file.xlsx>`
+// (converts to CSV and re-runs this script with --file).
 //
 // Env overrides:
 //   SYNC_MIN_RATIO   min sheet/master row ratio before aborting (default 0.9)
 //   SYNC_FORCE=1     bypass the corruption guard (use for legit bulk removals)
 
+import { readFile } from 'node:fs/promises';
 import { parse } from 'csv-parse/sync';
 import {
   loadProviders,
@@ -32,12 +35,20 @@ const FORCE = process.env.SYNC_FORCE === '1';
 
 const blank = (v) => !String(v ?? '').trim();
 
-// --- fetch the sheet ---
-const response = await fetch(CSV_URL, { redirect: 'follow' });
-if (!response.ok) {
-  throw new Error(`Sheet request failed: ${response.status} ${response.statusText}`);
+// --- fetch the sheet (or read a local CSV passed as --file <path>) ---
+const fileFlag = process.argv.indexOf('--file');
+let csv;
+if (fileFlag !== -1) {
+  const path = process.argv[fileFlag + 1];
+  if (!path) throw new Error('--file needs a path');
+  csv = await readFile(path, 'utf8');
+} else {
+  const response = await fetch(CSV_URL, { redirect: 'follow' });
+  if (!response.ok) {
+    throw new Error(`Sheet request failed: ${response.status} ${response.statusText}`);
+  }
+  csv = await response.text();
 }
-const csv = await response.text();
 
 // Google serves an HTML error/redirect page with a 200 when the sheet is not
 // publicly readable. Bail before touching the master if we did not get real CSV.

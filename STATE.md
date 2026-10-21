@@ -48,10 +48,13 @@ Atlas beta removed per Max's update. Workers serves clean URLs
 (.html 307s to extensionless).
 
 ## Pending
-1. **SharePoint co-maintenance** — colleague edits an Excel on SharePoint,
-   synced into providers.json. Options scoped (Claude-driven sync now, or
-   Cloudflare cron + KV later; cron needs an "anyone with link" share or a
-   Graph app registration). Khairul to confirm tenant sharing settings.
+1. **SharePoint co-maintenance** — LIVE surface: providers-master.xlsx on
+   the marketing2 site (Shared Documents/Global Provider Network/Master
+   List). Colleagues co-edit there; sync = download the file, then
+   `npm run sync-xlsx -- <path>` (same guards as sync-data). Composio
+   SharePoint is off-limits and the MS connector truncates xlsx reads, so
+   the download step stays manual. Daily cron still needs a Graph app
+   registration or an "anyone with link" share — pending.
 2. **Merge to main** — all work is committed and pushed on
    `new-ui-migration`; PR/merge to main still open.
 3. **CJ check** — ~9 possible new sheet rows (ID +4, SG +4, CN +1) to
