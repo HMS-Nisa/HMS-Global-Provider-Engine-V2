@@ -521,3 +521,13 @@ footer .trust .on-dark{display:none}
 .map-card .map text[fill="#9AAAB0"]{fill:#8FA6AD}
 .cc-list li{transition:border-color .2s}
 .cc-list li:hover{border-color:var(--cyan)}
+
+/* ---- Mega dropdown as a light panel (desktop): contrast pop against the
+   dark-locked theme. Mobile keeps the in-menu dark list. ---- */
+@media (min-width:861px){
+  .nav .mm{background:#EDF2F2;border-bottom:1px solid #C9D6D9;box-shadow:0 30px 60px -30px rgba(8,24,30,.55)}
+  .nav .mm h6{color:#127289}
+  .nav .mm-i,.nav .mm-i b{color:#0F323D}
+  .nav .mm .mm-i small{color:#55707A}
+  .nav .mm-i:hover{background:rgba(18,114,137,.1);color:#0F323D}
+}
