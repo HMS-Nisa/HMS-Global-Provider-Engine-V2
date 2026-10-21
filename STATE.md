@@ -53,8 +53,10 @@ Atlas beta removed per Max's update. Workers serves clean URLs
    List). Colleagues co-edit there; sync = download the file, then
    `npm run sync-xlsx -- <path>` (same guards as sync-data). Composio
    SharePoint is off-limits and the MS connector truncates xlsx reads, so
-   the download step stays manual. Daily cron still needs a Graph app
-   registration or an "anyone with link" share — pending.
+   the download step stays manual. Daily cron: tenant blocks "Anyone with link" (confirmed 2026-10-21),
+   so the only route is an Azure AD app registration (Graph
+   `Sites.Selected`, read on marketing2, client-credentials) — ask IT,
+   then a Cloudflare cron worker closes the loop.
 2. **Merge to main** — all work is committed and pushed on
    `new-ui-migration`; PR/merge to main still open.
 3. **CJ check** — ~9 possible new sheet rows (ID +4, SG +4, CN +1) to
