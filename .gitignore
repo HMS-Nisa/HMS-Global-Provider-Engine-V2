@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Local Claude Code config (personal permissions, machine-specific dev ports)
 .claude/
+
+# Generated SharePoint upload snapshot (regenerate from providers.json)
+providers-master.xlsx
