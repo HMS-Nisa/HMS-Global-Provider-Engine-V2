@@ -3840,6 +3840,14 @@
 		"country": "INDONESIA"
 	},
 	{
+		"name": "Bunda Surabaya, Klinik",
+		"serviceType": "GP",
+		"address": "",
+		"city": "KOTA SURABAYA",
+		"province": "JAWA TIMUR",
+		"country": "INDONESIA"
+	},
+	{
 		"name": "Bunda Surabaya, Rs",
 		"serviceType": "Hospital",
 		"address": "JL. RAYA KANDANGAN NO. 23-24 BENOWO SURABAYA",
@@ -13438,6 +13446,14 @@
 		"city": "MASJID TANAH",
 		"province": "MELAKA",
 		"country": "MALAYSIA"
+	},
+	{
+		"name": "Klinik Asy Syifa Medan Deli",
+		"serviceType": "GP",
+		"address": "",
+		"city": "KOTA SEMARANG",
+		"province": "JAWA TENGAH",
+		"country": "INDONESIA"
 	},
 	{
 		"name": "Klinik Asy-Syuraa",
@@ -23254,6 +23270,14 @@
 		"city": "KAPAR",
 		"province": "SELANGOR",
 		"country": "MALAYSIA"
+	},
+	{
+		"name": "Klinik Lulu Medika",
+		"serviceType": "GP",
+		"address": "",
+		"city": "BANDA ACEH",
+		"province": "ACEH",
+		"country": "INDONESIA"
 	},
 	{
 		"name": "Klinik Luqman & Nadirah",
@@ -58920,6 +58944,14 @@
 		"country": "INDONESIA"
 	},
 	{
+		"name": "Puri Garcia Serang, Rs",
+		"serviceType": "Hospital",
+		"address": "",
+		"city": "KOTA SERANG",
+		"province": "BANTEN",
+		"country": "INDONESIA"
+	},
+	{
 		"name": "Puri Malang, Rsia",
 		"serviceType": "Hospital",
 		"address": "JL. TAMAN SLAMET NO. 20 MALANG",
@@ -62224,6 +62256,22 @@
 		"country": "MALAYSIA"
 	},
 	{
+		"name": "Smg Specialist Centre",
+		"serviceType": "Specialist",
+		"address": "",
+		"city": "SINGAPORE",
+		"province": "SINGAPORE",
+		"country": "SINGAPORE"
+	},
+	{
+		"name": "Smg Specialist Centre Novena",
+		"serviceType": "Specialist",
+		"address": "",
+		"city": "SINGAPORE",
+		"province": "SINGAPORE",
+		"country": "SINGAPORE"
+	},
+	{
 		"name": "Smg Urology Centre",
 		"serviceType": "Specialist",
 		"address": "1 FARRER PARK STATION ROAD, #08-10 FARRER PARK MEDICAL CENTRE, SINGAPORE 217562",
@@ -62864,6 +62912,14 @@
 		"country": "SINGAPORE"
 	},
 	{
+		"name": "Sw1 Clinic Oue Downtown",
+		"serviceType": "Specialist",
+		"address": "",
+		"city": "SINGAPORE",
+		"province": "SINGAPORE",
+		"country": "SINGAPORE"
+	},
+	{
 		"name": "Syafira Pekanbaru, Rs",
 		"serviceType": "Hospital",
 		"address": "JL. JEND. SUDIRMAN NO. 134 PEKANBARU",
@@ -63251,6 +63307,14 @@
 		"name": "The Cancer Centre Mount Elizabeth Novena",
 		"serviceType": "Specialist",
 		"address": "38 IRRAWADDY ROAD, #05-34/35 MOUNT ELIZABETH NOVENA SPECIALIST CENTRE, SINGAPORE 329563",
+		"city": "SINGAPORE",
+		"province": "SINGAPORE",
+		"country": "SINGAPORE"
+	},
+	{
+		"name": "The Cancer Centre Novena",
+		"serviceType": "Specialist",
+		"address": "",
 		"city": "SINGAPORE",
 		"province": "SINGAPORE",
 		"country": "SINGAPORE"
