@@ -472,3 +472,27 @@ footer .trust .on-dark{display:none}
 .mail-card a.addr{color:#fff;font-size:clamp(1.1rem,2.6vw,1.6rem);font-weight:500;text-decoration:none;word-break:break-all}
 .mail-card a.addr:hover{color:var(--cyan)}
 .cta-band .btn-ghost{color:var(--band-fg);border-color:#2C5866}
+
+/* ---- Motion layer: subtle reveal + micro-interactions (vanilla port of
+   ReactBits-style FadeContent/AnimatedContent). motion.js tags elements
+   with .rv and flips .in on scroll; everything gated behind
+   prefers-reduced-motion. ---- */
+@media (prefers-reduced-motion: no-preference){
+  .rv{opacity:0;transform:translateY(16px);filter:blur(5px);
+    transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);
+    transition-delay:var(--rvd,0s)}
+  .rv.in{opacity:1;transform:none;filter:none}
+  .btn{transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s,border-color .2s,background .2s,color .2s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary:hover{box-shadow:0 10px 26px -12px rgba(15,50,61,.55)}
+  .btn:active{transform:translateY(0) scale(.98)}
+  .prod-card{transition:border-color .25s,transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s}
+  .prod-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -24px rgba(15,50,61,.35)}
+  .mm-i{transition:background .2s,transform .22s cubic-bezier(.22,1,.36,1)}
+  .mm-i:hover{transform:translateX(3px)}
+}
+@media (prefers-reduced-motion: no-preference) and (min-width:861px){
+  .nav .mm{display:block;opacity:0;pointer-events:none;transform:translateY(-6px);
+    transition:opacity .22s ease,transform .25s cubic-bezier(.22,1,.36,1)}
+  .nav .mega:hover .mm,.nav .mega:focus-within .mm{opacity:1;pointer-events:auto;transform:none}
+}

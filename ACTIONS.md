@@ -82,3 +82,15 @@ Chronological record of what was done, in order.
 - sitemap.xml gained /directory/; wrangler.jsonc switched to serve ./site.
 - Verified locally: mega dropdown, mobile menu, directory page with 8,127
   records and working filters. Go-live awaits review + `wrangler deploy`.
+
+## 7. Motion layer (2026-10-21)
+
+- Subtle premium animation pass on the Assistance site, vanilla port of
+  ReactBits patterns (no React/shadcn — site stays static HTML):
+  scroll reveals with blur/fade-up and sibling stagger, count-up KPI and
+  stat figures, card lift + shadow on hover, button micro-interactions,
+  animated mega-menu open. All gated behind prefers-reduced-motion.
+- Files: site/motion.js (engine), styles.css motion block, script tag on
+  all 16 pages, service-worker cache bumped to v4.
+- Verified: reveals + count-up firing, console clean, desktop dropdown and
+  mobile menu intact.
