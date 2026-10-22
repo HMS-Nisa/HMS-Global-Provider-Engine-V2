@@ -21,8 +21,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px
 .wrap{max-width:var(--maxw);margin:0 auto;padding-inline:20px}
 a{color:var(--accent)}
 h1,h2,h3{font-weight:500;line-height:1.15;text-wrap:balance;margin:0}
-h1{font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.02em}
-h2{font-size:clamp(1.55rem,3.2vw,2.3rem);letter-spacing:-.015em}
+h1{font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.038em;line-height:1.05}
+h2{font-size:clamp(1.55rem,3.2vw,2.3rem);letter-spacing:-.028em}
 h3{font-size:1.15rem}
 p{margin:0}
 .eyebrow{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-2);font-weight:500}
