@@ -82,14 +82,14 @@
 		var size = Math.max(Math.min(w, 560), 380);
 
 		var points = NETWORK.map(function (c) {
-			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#4DB8CC' };
+			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#127289' };
 		}).concat(PARTNERS.map(function (c) {
-			return { name: c[0], lat: c[1], lng: c[2], size: 0.01 + c[3] * 0.02, r: 0.2 + c[3] * 0.4, color: 'rgba(232,131,122,.9)' };
+			return { name: c[0], lat: c[1], lng: c[2], size: 0.01 + c[3] * 0.02, r: 0.2 + c[3] * 0.4, color: 'rgba(18,114,137,.45)' };
 		}));
 		var arcs = NETWORK.filter(function (c) { return c !== KL && c[3] >= 0.3; }).map(function (c) {
-			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(77,184,204,.9)', 'rgba(77,184,204,.05)'] };
+			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(18,114,137,.9)', 'rgba(18,114,137,.12)'] };
 		}).concat(PARTNERS.filter(function (c) { return c[3] >= 0.3; }).map(function (c) {
-			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(232,83,74,.6)', 'rgba(232,83,74,.03)'] };
+			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(77,184,204,.7)', 'rgba(77,184,204,.05)'] };
 		}));
 
 		var globe = Globe({ rendererConfig: { alpha: true, antialias: true } })(holder)
@@ -97,12 +97,13 @@
 			.backgroundColor('rgba(0,0,0,0)')
 			.showGlobe(true)
 			.showAtmosphere(true)
-			.atmosphereColor('#4DB8CC')
-			.atmosphereAltitude(0.12)
-			.hexPolygonsData(countries)
-			.hexPolygonResolution(3)
-			.hexPolygonMargin(0.68)
-			.hexPolygonColor(function () { return 'rgba(99,179,205,.6)'; })
+			.atmosphereColor('#B9D8DF')
+			.atmosphereAltitude(0.08)
+			.polygonsData(countries)
+			.polygonCapColor(function () { return 'rgba(18,114,137,.13)'; })
+			.polygonSideColor(function () { return 'rgba(18,114,137,.04)'; })
+			.polygonStrokeColor(function () { return 'rgba(10,46,56,.28)'; })
+			.polygonAltitude(0.004)
 			.pointsData(points)
 			.pointLat('lat').pointLng('lng')
 			.pointAltitude('size')
@@ -116,11 +117,14 @@
 			.arcDashGap(1.2)
 			.arcDashAnimateTime(3200);
 
-		// Stripe-style sphere: solid deep ink, continents as the hex dots above.
-		globe.globeMaterial().color.set('#0A2E38');
-		globe.globeMaterial().emissive.set('#07212A');
-		globe.globeMaterial().emissiveIntensity = 0.35;
-		globe.globeMaterial().shininess = 8;
+		// Glassy light sphere: near-white, slightly translucent, soft sheen.
+		var mat = globe.globeMaterial();
+		mat.color.set('#F7FAFA');
+		mat.emissive.set('#FFFFFF');
+		mat.emissiveIntensity = 0.25;
+		mat.transparent = true;
+		mat.opacity = 0.95;
+		mat.shininess = 30;
 
 		globe.controls().autoRotate = true;
 		globe.controls().autoRotateSpeed = 0.5;
