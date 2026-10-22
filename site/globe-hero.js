@@ -75,23 +75,23 @@
 		var size = Math.max(Math.min(w, 560), 380);
 
 		var points = NETWORK.map(function (c) {
-			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#3FC1D4' };
+			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#0A2E38' };
 		}).concat(PARTNERS.map(function (c) {
-			return { name: c[0], lat: c[1], lng: c[2], size: 0.01 + c[3] * 0.02, r: 0.2 + c[3] * 0.4, color: 'rgba(233,241,242,.75)' };
+			return { name: c[0], lat: c[1], lng: c[2], size: 0.01 + c[3] * 0.02, r: 0.2 + c[3] * 0.4, color: 'rgba(18,114,137,.8)' };
 		}));
 		var arcs = NETWORK.filter(function (c) { return c !== KL && c[3] >= 0.3; }).map(function (c) {
-			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(63,193,212,.85)', 'rgba(63,193,212,.05)'] };
+			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(10,46,56,.75)', 'rgba(10,46,56,.04)'] };
 		}).concat(PARTNERS.filter(function (c) { return c[3] >= 0.3; }).map(function (c) {
-			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(233,241,242,.55)', 'rgba(233,241,242,.03)'] };
+			return { startLat: KL[1], startLng: KL[2], endLat: c[1], endLng: c[2], color: ['rgba(18,114,137,.55)', 'rgba(18,114,137,.03)'] };
 		}));
 
 		var globe = Globe({ rendererConfig: { alpha: true, antialias: true } })(holder)
 			.width(size).height(size)
 			.backgroundColor('rgba(0,0,0,0)')
-			.globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+			.globeImageUrl('https://unpkg.com/three-globe/example/img/earth-day.jpg')
 			.showAtmosphere(true)
-			.atmosphereColor('#3FC1D4')
-			.atmosphereAltitude(0.18)
+			.atmosphereColor('#127289')
+			.atmosphereAltitude(0.14)
 			.pointsData(points)
 			.pointLat('lat').pointLng('lng')
 			.pointAltitude('size')

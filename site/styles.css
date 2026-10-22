@@ -1,10 +1,10 @@
 
 /* Layout: sticky nav, compact hero with a proof strip, Vitesse-style offer index (list + detail), then process, partners, offices. */
 :root{
-  --teal:#127289; --teal-mid:#059BB6; --cyan:#22BFD3; --coral:#F15E60;
-  --ink:#0F323D; --sand:#E6DFCF; --grey:#E0E1DA; --off:#FCFCF7;
-  --bg:#FCFCF7; --surface:#FFFFFF; --surface-2:#F4F1E8; --fg:#0F323D; --muted:#55707A; --line:#E0E1DA;
-  --accent:#127289; --accent-2:#059BB6; --band:#0F323D; --band-fg:#FCFCF7; --band-muted:#A9C4CB; --chip:#EAF5F6;
+  --teal:#127289; --teal-mid:#4DB8CC; --cyan:#4DB8CC; --coral:#E8534A;
+  --ink:#0A2E38; --sand:#EEE6D5; --grey:#E8E0D2; --off:#FDFBF7;
+  --bg:#FDFBF7; --surface:#FFFFFF; --surface-2:#F5EFE4; --fg:#0A2E38; --muted:#5B6B73; --line:#E8E0D2;
+  --accent:#127289; --accent-2:#127289; --band:#0A2E38; --band-fg:#FDFBF7; --band-muted:#9DB3BA; --chip:#F5EFE4;
   --font:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
   --r:12px; --maxw:1180px;
 }
@@ -43,8 +43,8 @@ p{margin:0}
 .nav ul a{color:var(--fg);text-decoration:none;font-size:.92rem}
 .nav ul a:hover{color:var(--accent)}
 .btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:11px 20px;font-weight:500;font-size:.95rem;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit}
-.btn-primary{background:var(--teal);color:#fff}
-.btn-primary:hover{background:#0e5f72}
+.btn-primary{background:var(--ink);color:#fff;box-shadow:0 10px 40px -10px rgba(10,46,56,.4)}
+.btn-primary:hover{background:var(--teal);box-shadow:0 15px 50px -10px rgba(10,46,56,.5)}
 .btn-ghost{border-color:var(--line);color:var(--fg);background:transparent}
 .btn-ghost:hover{border-color:var(--accent)}
 .menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line);border-radius:10px;padding:8px 12px;color:var(--fg);font:inherit}
