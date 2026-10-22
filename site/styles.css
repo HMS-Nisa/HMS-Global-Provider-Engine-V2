@@ -531,3 +531,9 @@ footer .trust .on-dark{display:none}
   .nav .mm .mm-i small{color:#55707A}
   .nav .mm-i:hover{background:rgba(18,114,137,.1);color:#0F323D}
 }
+
+/* ---- Hero: soft gradient wash on cream (SME POC look) ---- */
+.hero{background:
+  radial-gradient(60% 80% at 82% 10%, rgba(77,184,204,.20), transparent 70%),
+  radial-gradient(50% 70% at 10% 95%, rgba(18,114,137,.10), transparent 70%),
+  var(--bg)}
