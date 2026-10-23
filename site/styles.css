@@ -509,7 +509,7 @@ footer .trust .on-dark{display:none}
   transition:opacity 1.3s cubic-bezier(.22,1,.36,1),transform 1.3s cubic-bezier(.22,1,.36,1)}
 /* Zoomed in and nudged right/down so the sphere bleeds past the section
    edge; .hero{overflow:hidden} crops it without horizontal page scroll. */
-.hero-globe.in{opacity:1;transform:translate(26%,20%)}
+.hero-globe.in{opacity:1;transform:translate(26%,34%)}
 .hero-globe canvas{outline:none}
 /* The scene div globe.gl injects carries a fixed pixel size; absolute
    positioning keeps it out of grid track sizing so the 60/40 split holds,
