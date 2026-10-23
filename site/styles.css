@@ -518,9 +518,11 @@ footer .trust .on-dark{display:none}
 .hero-globe.on{display:block}
 @media (max-width:860px){
   /* Mobile: a cropped band below the copy; the sphere is wider than the
-     viewport and .hero{overflow:hidden} clips it at both edges. */
-  .hero-globe{min-height:240px;margin-top:4px}
-  .hero-globe.in{transform:translate(0,4%)}
+     viewport and .hero{overflow:hidden} clips it at both edges. Anchored
+     to the holder top so it can never ride up over the copy. */
+  .hero-globe{min-height:300px;margin-top:4px}
+  .hero-globe.in{transform:none}
+  .hero-globe>div{top:0;transform:translate(-50%,0)}
 }
 #heroGrid{grid-template-columns:1fr}
 /* Cap the hero copy so the single-column state (before the globe reveals,
