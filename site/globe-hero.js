@@ -78,8 +78,8 @@
 
 	function init() {
 		if (!window.Globe) return;
-		var w = holder.parentElement.getBoundingClientRect().width * 0.47;
-		var size = Math.max(Math.min(w, 560), 380);
+		var w = holder.parentElement.getBoundingClientRect().width * 0.56;
+		var size = Math.max(Math.min(w, 680), 420);
 
 		var points = NETWORK.map(function (c) {
 			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#127289' };
@@ -132,7 +132,7 @@
 		// Start pulled back and framed on Southeast Asia; the entrance glides
 		// in (CSS fade/scale) while the camera settles closer, then the slow
 		// rotation sweeps the worldwide partner nodes through view.
-		globe.pointOfView({ lat: 10, lng: 100, altitude: 3.4 }, 0);
+		globe.pointOfView({ lat: 10, lng: 100, altitude: 2.9 }, 0);
 
 		var revealed = false;
 		function reveal() {
@@ -143,7 +143,7 @@
 			requestAnimationFrame(function () {
 				requestAnimationFrame(function () {
 					holder.classList.add('in');
-					globe.pointOfView({ lat: 10, lng: 100, altitude: 2.1 }, 2400);
+					globe.pointOfView({ lat: 10, lng: 100, altitude: 1.75 }, 2400);
 				});
 			});
 		}

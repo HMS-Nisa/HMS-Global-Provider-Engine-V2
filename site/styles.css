@@ -51,7 +51,7 @@ p{margin:0}
 @media (max-width:860px){.nav ul,.nav .btn{display:none}.menu-btn{display:inline-flex}.nav.open ul{display:flex;flex-direction:column;position:absolute;left:0;right:0;top:64px;background:var(--bg);padding:16px 20px;border-bottom:1px solid var(--line);gap:14px}}
 
 /* hero */
-.hero{padding-block:40px 56px}
+.hero{padding-block:40px 56px;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero .lede{margin-top:18px}
@@ -505,19 +505,25 @@ footer .trust .on-dark{display:none}
 /* ---- Hero globe (lite mockup, globe-hero.js). Desktop only; on mobile,
    reduced motion or no WebGL the hero falls back to single-column text. ---- */
 .hero-globe{position:relative;min-height:420px;display:none;opacity:0;
-  transform:scale(.9) translateY(14px);
+  transform:scale(.9) translate(6%,16px);
   transition:opacity 1.3s cubic-bezier(.22,1,.36,1),transform 1.3s cubic-bezier(.22,1,.36,1)}
-.hero-globe.in{opacity:1;transform:none}
+/* Zoomed in and nudged right/down so the sphere bleeds past the section
+   edge; .hero{overflow:hidden} crops it without horizontal page scroll. */
+.hero-globe.in{opacity:1;transform:translate(26%,20%)}
 .hero-globe canvas{outline:none}
+/* The scene div globe.gl injects carries a fixed pixel size; absolute
+   positioning keeps it out of grid track sizing so the 60/40 split holds,
+   and lets the sphere bleed past the column. */
+.hero-globe>div{position:absolute!important;top:50%;left:50%;transform:translate(-50%,-50%)}
 @media (min-width:861px){
   .hero-globe.on{display:block}
 }
 #heroGrid{grid-template-columns:1fr}
 /* Cap the hero copy so the single-column state (before the globe reveals,
    and when it never loads) matches the two-column width - no reflow jump. */
-#heroGrid h1{max-width:15ch}
+#heroGrid h1{max-width:20ch}
 #heroGrid .lede{max-width:54ch}
-@media (min-width:861px){#heroGrid.globe-on{grid-template-columns:1fr .9fr;align-items:center}}
+@media (min-width:861px){#heroGrid.globe-on{grid-template-columns:1.5fr 1fr;align-items:center}}
 
 /* ---- Coverage map: a light panel on the dark band for contrast, but
    teal-tinted rather than stark white so it reads as one palette. ---- */
