@@ -29,8 +29,11 @@
 		groups.get(p).push(el);
 	});
 	groups.forEach(function (group) {
+		// Hero copy reveals bottom-to-top: buttons first, eyebrow last.
+		var reverse = !!group[0].closest('.hero, .page-hero');
 		group.forEach(function (el, i) {
-			el.style.setProperty('--rvd', Math.min(i * 80, 400) + 'ms');
+			var idx = reverse ? group.length - 1 - i : i;
+			el.style.setProperty('--rvd', Math.min(idx * 80, 400) + 'ms');
 		});
 	});
 
