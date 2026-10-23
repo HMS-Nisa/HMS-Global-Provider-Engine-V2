@@ -264,7 +264,7 @@ figcaption .ring-k{display:inline-block;width:10px;height:10px;border-radius:50%
 /* Aurora band behind subpage heroes (aurora.js); static wash as fallback. */
 .aurora-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.75}
 .aurora-static::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.55;
-  background:linear-gradient(180deg, #90DFE9 -12%, rgba(229,223,206,.75) 52%, rgba(252,252,247,0) 92%)}
+  background:linear-gradient(180deg, #A1E4EC -12%, rgba(229,223,206,.75) 52%, rgba(252,252,247,0) 92%)}
 .crumb{font-size:.85rem;color:var(--muted)}
 .crumb a{color:var(--muted);text-decoration:none}.crumb a:hover{color:var(--accent)}
 .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
