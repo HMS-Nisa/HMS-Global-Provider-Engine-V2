@@ -45,7 +45,7 @@
 		'  return 130.0*dot(m,g);}',
 		'void main(){',
 		'  vec2 uv=gl_FragCoord.xy/uRes;',
-		'  float h=snoise(vec2(uv.x*2.0+uTime*0.1,uTime*0.25))*0.5;',
+		'  float h=snoise(vec2(uv.x*2.0+uTime*0.05,uTime*0.125))*0.5;',
 		'  h=exp(h);',
 		'  float edge=uv.y*2.0-h+0.2;',
 		'  float intensity=0.6*edge;',
