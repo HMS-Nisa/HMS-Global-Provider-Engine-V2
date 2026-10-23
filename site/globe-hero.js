@@ -1,12 +1,13 @@
 // Hero globe - lite mockup (globe.gl UMD from CDN, lazy-loaded).
-// Desktop only, skipped under prefers-reduced-motion or without WebGL;
-// the hero simply stays single-column text when the globe does not run.
+// Runs on desktop and mobile (a cropped band below the copy there);
+// skipped under prefers-reduced-motion or without WebGL, where the
+// hero simply stays single-column text.
 // Cities are a hardcoded showcase set, not wired to providers.json yet.
 (function () {
 	var MOBILE = window.matchMedia('(max-width:860px)').matches;
 	var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	var holder = document.getElementById('heroGlobe');
-	if (!holder || MOBILE || REDUCED) return;
+	if (!holder || REDUCED) return;
 	try {
 		var canvas = document.createElement('canvas');
 		if (!(canvas.getContext('webgl2') || canvas.getContext('webgl'))) return;
@@ -78,8 +79,14 @@
 
 	function init() {
 		if (!window.Globe) return;
-		var w = holder.parentElement.getBoundingClientRect().width * 0.74;
-		var size = Math.max(Math.min(w, 900), 520);
+		var size;
+		if (MOBILE) {
+			// Wider than the viewport so the sphere crops at both edges.
+			size = Math.min(Math.round(window.innerWidth * 1.3), 560);
+		} else {
+			var w = holder.parentElement.getBoundingClientRect().width * 0.74;
+			size = Math.max(Math.min(w, 900), 520);
+		}
 
 		var points = NETWORK.map(function (c) {
 			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#127289' };

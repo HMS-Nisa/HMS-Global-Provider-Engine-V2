@@ -515,8 +515,12 @@ footer .trust .on-dark{display:none}
    positioning keeps it out of grid track sizing so the 60/40 split holds,
    and lets the sphere bleed past the column. */
 .hero-globe>div{position:absolute!important;top:50%;left:50%;transform:translate(-50%,-50%)}
-@media (min-width:861px){
-  .hero-globe.on{display:block}
+.hero-globe.on{display:block}
+@media (max-width:860px){
+  /* Mobile: a cropped band below the copy; the sphere is wider than the
+     viewport and .hero{overflow:hidden} clips it at both edges. */
+  .hero-globe{min-height:240px;margin-top:4px}
+  .hero-globe.in{transform:translate(0,4%)}
 }
 #heroGrid{grid-template-columns:1fr}
 /* Cap the hero copy so the single-column state (before the globe reveals,
