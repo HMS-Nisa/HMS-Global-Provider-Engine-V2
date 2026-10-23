@@ -78,8 +78,8 @@
 
 	function init() {
 		if (!window.Globe) return;
-		var w = holder.parentElement.getBoundingClientRect().width * 0.56;
-		var size = Math.max(Math.min(w, 680), 420);
+		var w = holder.parentElement.getBoundingClientRect().width * 0.74;
+		var size = Math.max(Math.min(w, 900), 520);
 
 		var points = NETWORK.map(function (c) {
 			return { name: c[0], lat: c[1], lng: c[2], size: 0.012 + c[3] * 0.028, r: 0.22 + c[3] * 0.5, color: '#127289' };
