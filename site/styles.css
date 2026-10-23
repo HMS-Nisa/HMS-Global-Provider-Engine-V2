@@ -490,6 +490,12 @@ footer .trust .on-dark{display:none}
   /* Hero entrance: a longer, more deliberate slide-up than scroll reveals. */
   .hero .rv,.page-hero .rv{transform:translateY(34px);
     transition-duration:.95s,.95s,.95s}
+  /* Homepage: ReactBits AnimatedContent treatment on scroll reveals -
+     a longer rise with a slight scale-up, no blur. */
+  body.home .rv{transform:translateY(56px) scale(.97);filter:none;
+    transition-duration:.9s,.9s,.9s}
+  body.home .hero .rv{transform:translateY(34px) scale(1);
+    transition-duration:.95s,.95s,.95s}
   .btn{transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s,border-color .2s,background .2s,color .2s}
   .btn:hover{transform:translateY(-1px)}
   .btn-primary:hover{box-shadow:0 10px 26px -12px rgba(15,50,61,.55)}
