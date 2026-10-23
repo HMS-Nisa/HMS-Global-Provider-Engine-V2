@@ -45,14 +45,14 @@
 		'  return 130.0*dot(m,g);}',
 		'void main(){',
 		'  vec2 uv=gl_FragCoord.xy/uRes;',
-		'  vec3 ramp=mix(mix(uC0,uC1,smoothstep(0.0,0.55,uv.x)),uC2,smoothstep(0.55,1.0,uv.x));',
 		'  float h=snoise(vec2(uv.x*2.0+uTime*0.1,uTime*0.25))*0.5;',
 		'  h=exp(h);',
-		'  h=uv.y*2.0-h+0.2;',
-		'  float intensity=0.6*h;',
-		'  float a=smoothstep(0.05,0.35,intensity);',
-		'  a*=smoothstep(0.0,0.35,uv.y);', // melt into the page at the bottom
-		'  vec3 col=ramp*(0.55+0.45*clamp(intensity,0.0,1.0));',
+		'  float edge=uv.y*2.0-h+0.2;',
+		'  float intensity=0.6*edge;',
+		// Vertical ramp: cream (page) -> sand -> sky cyan towards the top,
+		// with the noise wave animating the colour boundary.
+		'  float a=smoothstep(0.0,0.4,intensity);',
+		'  vec3 col=mix(uC1,uC0,smoothstep(0.12,0.62,intensity));',
 		'  gl_FragColor=vec4(col*a,a);}'
 	].join('\n');
 
@@ -77,11 +77,11 @@
 
 	var uTime = gl.getUniformLocation(prog, 'uTime');
 	var uRes = gl.getUniformLocation(prog, 'uRes');
-	// Brand ramp: cyan -> deep teal -> cyan, on the cream background.
+	// Reference gradient: sky cyan at the top through sand into the cream page.
 	function rgb(hex) { return [parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255]; }
-	gl.uniform3fv(gl.getUniformLocation(prog, 'uC0'), rgb('#4DB8CC'));
-	gl.uniform3fv(gl.getUniformLocation(prog, 'uC1'), rgb('#127289'));
-	gl.uniform3fv(gl.getUniformLocation(prog, 'uC2'), rgb('#4DB8CC'));
+	gl.uniform3fv(gl.getUniformLocation(prog, 'uC0'), rgb('#22BFD3'));
+	gl.uniform3fv(gl.getUniformLocation(prog, 'uC1'), rgb('#E5DFCE'));
+	gl.uniform3fv(gl.getUniformLocation(prog, 'uC2'), rgb('#FCFCF7'));
 
 	gl.enable(gl.BLEND);
 	gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
