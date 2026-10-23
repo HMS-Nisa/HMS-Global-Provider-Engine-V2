@@ -7,7 +7,7 @@
 	if (!('IntersectionObserver' in window)) return;
 
 	var SELECTORS = [
-		'.hero h1', '.hero .lede', '.hero .ctas',
+		'.hero .eyebrow', '.hero h1', '.hero .lede', '.hero .ctas',
 		'.page-hero h1', '.page-hero .lede', '.page-hero p',
 		'.sec-head', '.prod-card', '.kpis > div', '.stats > div',
 		'.reach-copy', '.country', '.trust > *', 'section .wrap > h2',

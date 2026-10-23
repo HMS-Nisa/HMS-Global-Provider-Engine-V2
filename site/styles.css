@@ -487,6 +487,9 @@ footer .trust .on-dark{display:none}
     transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1),filter .7s cubic-bezier(.22,1,.36,1);
     transition-delay:var(--rvd,0s)}
   .rv.in{opacity:1;transform:none;filter:none}
+  /* Hero entrance: a longer, more deliberate slide-up than scroll reveals. */
+  .hero .rv,.page-hero .rv{transform:translateY(34px);
+    transition-duration:.95s,.95s,.95s}
   .btn{transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s,border-color .2s,background .2s,color .2s}
   .btn:hover{transform:translateY(-1px)}
   .btn-primary:hover{box-shadow:0 10px 26px -12px rgba(15,50,61,.55)}
