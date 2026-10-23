@@ -8,7 +8,7 @@
 
 	var SELECTORS = [
 		'.hero .eyebrow', '.hero h1', '.hero .lede', '.hero .ctas',
-		'.page-hero h1', '.page-hero .lede', '.page-hero p',
+		'.page-hero h1', '.page-hero .lede', '.page-hero p', '.page-hero .ctas',
 		'.sec-head', '.prod-card', '.kpis > div', '.stats > div',
 		'.reach-copy', '.reach-map', '.country', '.trust > *',
 		'.steps > li', '.cta-band', '.journey > li', '.j-side',
