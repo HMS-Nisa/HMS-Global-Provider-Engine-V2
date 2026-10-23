@@ -35,6 +35,18 @@
 		});
 	});
 
+	// Hero copy animates on page load, deterministically; everything else
+	// reveals on scroll via the observer.
+	var heroEls = [], scrollEls = [];
+	els.forEach(function (el) {
+		(el.closest('.hero, .page-hero') ? heroEls : scrollEls).push(el);
+	});
+	requestAnimationFrame(function () {
+		requestAnimationFrame(function () {
+			heroEls.forEach(function (el) { el.classList.add('in'); });
+		});
+	});
+
 	var io = new IntersectionObserver(function (entries) {
 		entries.forEach(function (entry) {
 			if (!entry.isIntersecting) return;
@@ -42,7 +54,7 @@
 			io.unobserve(entry.target);
 		});
 	}, { threshold: 0.1 });
-	els.forEach(function (el) { io.observe(el); });
+	scrollEls.forEach(function (el) { io.observe(el); });
 
 	// Count-up on stat figures like "USD 100m+", "100,000+", "15,000+".
 	function countUp(el) {
