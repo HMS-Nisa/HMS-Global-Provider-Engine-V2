@@ -10,8 +10,9 @@
 		'.hero .eyebrow', '.hero h1', '.hero .lede', '.hero .ctas',
 		'.page-hero h1', '.page-hero .lede', '.page-hero p',
 		'.sec-head', '.prod-card', '.kpis > div', '.stats > div',
-		'.reach-copy', '.country', '.trust > *', 'section .wrap > h2',
-		'section .wrap > .lede',
+		'.reach-copy', '.reach-map', '.country', '.trust > *',
+		'.steps > li', '.cta-band', '.journey > li', '.j-side',
+		'section .wrap > h2', 'section .wrap > .lede',
 	];
 
 	var els = Array.prototype.slice.call(document.querySelectorAll(SELECTORS.join(',')))
