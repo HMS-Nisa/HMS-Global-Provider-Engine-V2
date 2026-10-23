@@ -513,6 +513,10 @@ footer .trust .on-dark{display:none}
   .hero-globe.on{display:block}
 }
 #heroGrid{grid-template-columns:1fr}
+/* Cap the hero copy so the single-column state (before the globe reveals,
+   and when it never loads) matches the two-column width - no reflow jump. */
+#heroGrid h1{max-width:15ch}
+#heroGrid .lede{max-width:54ch}
 @media (min-width:861px){#heroGrid.globe-on{grid-template-columns:1fr .9fr;align-items:center}}
 
 /* ---- Coverage map: a light panel on the dark band for contrast, but
