@@ -79,7 +79,8 @@
 	var uRes = gl.getUniformLocation(prog, 'uRes');
 	// Reference gradient: sky cyan at the top through sand into the cream page.
 	function rgb(hex) { return [parseInt(hex.slice(1, 3), 16) / 255, parseInt(hex.slice(3, 5), 16) / 255, parseInt(hex.slice(5, 7), 16) / 255]; }
-	gl.uniform3fv(gl.getUniformLocation(prog, 'uC0'), rgb('#22BFD3'));
+	// Cyan softened 50% towards white (#22BFD3 at half strength).
+	gl.uniform3fv(gl.getUniformLocation(prog, 'uC0'), rgb('#90DFE9'));
 	gl.uniform3fv(gl.getUniformLocation(prog, 'uC1'), rgb('#E5DFCE'));
 	gl.uniform3fv(gl.getUniformLocation(prog, 'uC2'), rgb('#FCFCF7'));
 
