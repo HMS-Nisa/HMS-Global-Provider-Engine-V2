@@ -13,6 +13,9 @@ _Last updated: 2026-10-21 (new UI live)_
 - **Rollback:** Netlify project `hms-global-provider-network` left intact.
   Re-create CNAME `global` → `hms-global-provider-network.netlify.app` (DNS only)
   to revert.
+- Netlify **builds stopped** on 2026-10-23 (Project configuration → Build settings):
+  the project was still auto-building every push to main, which burned the
+  HMS AI team's 300 monthly credits. To roll back, reactivate builds first.
 - `netlify.toml` is legacy; `wrangler.jsonc` is the deploy config.
   Deploy = `npm run build` then `npx wrangler deploy`.
 
