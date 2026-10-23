@@ -29,11 +29,8 @@
 		groups.get(p).push(el);
 	});
 	groups.forEach(function (group) {
-		// Hero copy reveals bottom-to-top: buttons first, eyebrow last.
-		var reverse = !!group[0].closest('.hero, .page-hero');
 		group.forEach(function (el, i) {
-			var idx = reverse ? group.length - 1 - i : i;
-			el.style.setProperty('--rvd', Math.min(idx * 80, 400) + 'ms');
+			el.style.setProperty('--rvd', Math.min(i * 80, 400) + 'ms');
 		});
 	});
 
@@ -43,7 +40,7 @@
 			entry.target.classList.add('in');
 			io.unobserve(entry.target);
 		});
-	}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+	}, { threshold: 0.1 });
 	els.forEach(function (el) { io.observe(el); });
 
 	// Count-up on stat figures like "USD 100m+", "100,000+", "15,000+".
