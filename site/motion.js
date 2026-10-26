@@ -11,7 +11,7 @@
 		'.page-hero h1', '.page-hero .lede', '.page-hero p', '.page-hero .ctas',
 		'.sec-head', '.prod-card', '.kpis > div', '.stats > div',
 		'.reach-copy', '.reach-map', '.country',
-		'.steps > li', '.cta-band', '.journey > li', '.j-side',
+		'.steps > li', '.steps + p', '.cta-band', '.journey > li', '.j-side',
 		'section .wrap > h2', 'section .wrap > .lede',
 	];
 
