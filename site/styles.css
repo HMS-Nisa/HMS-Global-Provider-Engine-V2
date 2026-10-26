@@ -350,11 +350,11 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
     border:0;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);
     margin-left:auto;transform:rotate(45deg);margin-top:-5px;transition:transform .25s}
   .nav .mega.open>a::after{transform:rotate(225deg);margin-top:5px}
-  /* Collapsed by default; expands by animating the grid row 0fr -> 1fr. */
-  .nav .mm{position:static;display:grid;grid-template-rows:0fr;overflow:hidden;
+  /* Collapsed by default; max-height transition (not grid rows - Safari
+     leaves the expanded height behind when animating back to 0fr). */
+  .nav .mm{position:static;display:block;max-height:0;overflow:hidden;
     box-shadow:none;border:0;background:none;opacity:0;visibility:hidden}
-  .nav .mega.open .mm{grid-template-rows:1fr;opacity:1;visibility:visible}
-  .nav .mm>.wrap{min-height:0;overflow:hidden}
+  .nav .mega.open .mm{max-height:1200px;opacity:1;visibility:visible}
   .nav .mm .wrap{grid-template-columns:1fr;gap:10px;padding:0 0 14px}
   .nav .mm h6{margin:10px 0 2px;font-size:.7rem}
   .mm-col.two{grid-template-columns:1fr}
@@ -366,7 +366,7 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
   .nav .mnav-cta a:hover{color:#fff}
   /* Sleek open: the panel glides down and rows cascade in. */
   @media (prefers-reduced-motion: no-preference){
-    .nav .mm{transition:grid-template-rows .4s cubic-bezier(.22,1,.36,1),
+    .nav .mm{transition:max-height .45s cubic-bezier(.22,1,.36,1),
       opacity .3s ease,visibility .3s}
     .nav.open ul{animation:mnavPanel .32s cubic-bezier(.22,1,.36,1)}
     .nav.open ul>li{animation:mnavRow .5s cubic-bezier(.22,1,.36,1) both}
