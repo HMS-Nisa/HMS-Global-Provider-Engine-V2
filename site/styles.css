@@ -361,6 +361,12 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
   .nav .mm-i{padding:8px 10px;min-height:44px;align-items:center}
   .mm-i small{display:none}
   .nav .mm-feat{display:none}
+  /* Scrim: dim the page behind the open menu; tap it to close (app.js).
+     It lives on body - the nav's backdrop-filter would trap a fixed
+     pseudo-element inside the header box. Nav (z-index 20) sits above. */
+  body.nav-open{overflow:hidden}
+  body.nav-open::before{content:"";position:fixed;inset:0;z-index:10;
+    background:rgba(10,46,56,.45);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
   .nav .mnav-cta{padding-top:14px}
   .nav .mnav-cta a{display:inline-flex;min-height:0;color:#fff;justify-content:center}
   .nav .mnav-cta a:hover{color:#fff}
@@ -368,6 +374,7 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
   @media (prefers-reduced-motion: no-preference){
     .nav .mm{transition:max-height .45s cubic-bezier(.22,1,.36,1),
       opacity .3s ease,visibility .3s}
+    body.nav-open::before{animation:mnavScrim .3s ease}
     .nav.open ul{animation:mnavPanel .32s cubic-bezier(.22,1,.36,1)}
     .nav.open ul>li{animation:mnavRow .5s cubic-bezier(.22,1,.36,1) both}
     .nav.open ul>li:nth-child(2){animation-delay:.04s}
@@ -377,6 +384,7 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
     .nav.open ul>li:nth-child(6){animation-delay:.2s}
   }
 }
+@keyframes mnavScrim{from{opacity:0}}
 @keyframes mnavPanel{from{opacity:0;transform:translateY(-10px)}}
 @keyframes mnavRow{from{opacity:0;transform:translateY(10px)}}
 /* footer trust row */

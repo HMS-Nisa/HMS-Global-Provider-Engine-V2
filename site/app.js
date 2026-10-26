@@ -1,7 +1,10 @@
 // menu
 const nav=document.getElementById('nav'), mb=document.getElementById('menuBtn');
-mb.addEventListener('click',()=>{const o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
-nav.querySelectorAll('ul a:not(.mega-t)').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');mb.setAttribute('aria-expanded','false')}));
+function closeMenu(){nav.classList.remove('open');mb.setAttribute('aria-expanded','false');document.body.classList.remove('nav-open')}
+mb.addEventListener('click',()=>{const o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o);document.body.classList.toggle('nav-open',o)});
+nav.querySelectorAll('ul a:not(.mega-t)').forEach(a=>a.addEventListener('click',closeMenu));
+// tapping the scrim (body's backdrop layer) closes the menu
+document.addEventListener('click',e=>{if(e.target===document.body&&nav.classList.contains('open'))closeMenu()});
 
 // mobile accordion: mega toggles expand instead of navigating; one open at a time
 const mnavMq=matchMedia('(max-width:860px)');
