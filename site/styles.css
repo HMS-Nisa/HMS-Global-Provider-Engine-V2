@@ -334,7 +334,31 @@ sup .fn{text-decoration:none;font-weight:600;margin-left:2px}
 .mm-i b{display:block;font-weight:500;font-size:.92rem}.mm-i small{display:block;color:var(--muted);font-size:.78rem;line-height:1.35}
 .nav .mm-feat{background:var(--band);color:var(--band-fg);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;text-decoration:none}
 .mm-feat b{font-weight:500;font-size:1.05rem}.mm-feat .p{color:var(--band-muted);font-size:.86rem}.mm-feat .go{color:var(--cyan);font-weight:500;font-size:.88rem}
-@media (max-width:860px){.nav .mega>a{padding-block:0}.nav .mm{position:static;display:block;box-shadow:none;border:0;background:none}.nav .mm .wrap{grid-template-columns:1fr;gap:14px;padding:6px 0 0 8px}.mm-col.two{grid-template-columns:1fr}.mm-i small{display:none}.nav .mm-feat{display:none}.nav .mega>a::after{display:none}}
+/* Mobile nav: an accordion. Top-level rows with hairline dividers and
+   48px tap targets; submenus collapse behind a chevron, one open at a
+   time (app.js toggles .open); the CTA sits as the last row. */
+@media (max-width:860px){
+  .nav.open ul{gap:0;padding:4px 20px 16px;align-items:stretch}
+  .nav ul li{border-bottom:1px solid var(--line);width:100%}
+  .nav ul li:last-child{border-bottom:0}
+  .nav ul li>a{display:flex;align-items:center;min-height:48px;font-size:1rem;font-weight:500}
+  .nav .mega>a{display:flex;align-items:center;padding-block:0;justify-content:space-between;width:100%}
+  .nav .mega>a::after{display:inline-block;content:"";width:8px;height:8px;flex:none;
+    border:0;border-right:1.5px solid var(--muted);border-bottom:1.5px solid var(--muted);
+    margin-left:auto;transform:rotate(45deg);margin-top:-5px;transition:transform .25s}
+  .nav .mega.open>a::after{transform:rotate(225deg);margin-top:5px}
+  .nav .mm{position:static;display:none;box-shadow:none;border:0;background:none}
+  .nav .mega.open .mm{display:block}
+  .nav .mm .wrap{grid-template-columns:1fr;gap:10px;padding:0 0 14px}
+  .nav .mm h6{margin:10px 0 2px;font-size:.7rem}
+  .mm-col.two{grid-template-columns:1fr}
+  .nav .mm-i{padding:8px 10px;min-height:44px;align-items:center}
+  .mm-i small{display:none}
+  .nav .mm-feat{display:none}
+  .nav .mnav-cta{padding-top:14px}
+  .nav .mnav-cta a{display:inline-flex;min-height:0;color:#fff;justify-content:center}
+  .nav .mnav-cta a:hover{color:#fff}
+}
 /* footer trust row */
 footer .wrap.trust{display:flex;align-items:center;gap:20px 28px;flex-wrap:wrap;justify-content:flex-start;padding-bottom:20px;margin-bottom:20px;border-bottom:1px solid var(--line)}
 .trust-iag{display:flex;align-items:center;gap:12px}

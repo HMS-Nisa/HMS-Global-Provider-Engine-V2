@@ -1,7 +1,17 @@
 // menu
 const nav=document.getElementById('nav'), mb=document.getElementById('menuBtn');
 mb.addEventListener('click',()=>{const o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o)});
-nav.querySelectorAll('ul a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');mb.setAttribute('aria-expanded','false')}));
+nav.querySelectorAll('ul a:not(.mega-t)').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');mb.setAttribute('aria-expanded','false')}));
+
+// mobile accordion: mega toggles expand instead of navigating; one open at a time
+const mnavMq=matchMedia('(max-width:860px)');
+nav.querySelectorAll('li.mega>a').forEach(a=>a.addEventListener('click',e=>{
+  if(!mnavMq.matches)return;
+  e.preventDefault();
+  const li=a.parentElement, open=li.classList.toggle('open');
+  a.setAttribute('aria-expanded',open);
+  nav.querySelectorAll('li.mega.open').forEach(o=>{if(o!==li){o.classList.remove('open');o.querySelector('a').setAttribute('aria-expanded','false')}});
+}));
 
 // copy address
 document.querySelectorAll('.copy').forEach(b=>b.addEventListener('click',()=>{
